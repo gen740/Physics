@@ -43,12 +43,13 @@ class Vector {
 
   Matrix<T> to_mat(int col, int row) { return Matrix<T>(*this, col, row); }
 
+  // 内部のvector表現を得る
+  std::vector<T> data() { return m_data; }
+
   template <FloatingPointType U>
   friend std::ostream &operator<<(std::ostream &os, const Vector<U> &vec);
 
   friend Matrix<T>;
-
-  T *data() { return m_data.data(); }
 
  private:
   std::vector<T> m_data;

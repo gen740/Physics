@@ -27,7 +27,7 @@ class Matrix {
   Matrix(int col, int row) : m_data(col * row), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0), m_COL(0), m_ROW(0) {}
   Matrix(const Matrix &mat)
-      : m_COL(mat.m_COL), m_ROW(mat.m_ROW), m_data(mat.m_data) {}
+      : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
   Matrix(const Matrix<T> &mat, int col, int row);
   Matrix(Matrix<T> &&mat, int col, int row);
   Matrix(const Vector<T> &vec, int col, int row);
@@ -63,6 +63,9 @@ class Matrix {
 
   // Vector に変換する
   Vector<T> to_vec() { return Vector<T>(*this); }
+
+  // 内部のvector表現を得る
+  std::vector<T> data() { return m_data; }
 
   template <FloatingPointType U>
   friend std::ostream &operator<<(std::ostream &os, const Matrix<U> &mat);
