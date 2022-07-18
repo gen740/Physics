@@ -74,13 +74,25 @@ TEST(Matrix, Operation) {
 
 TEST(Matrix, SVD) {
   Matrix<double> m({
-      {1, 2, 3},  //
-      {4, 5, 6},  //
-      {7, 8, 10}  //
+      {1, 2, 3, 4},    //
+      {5, 6, 7, 8},    //
+      {9, 10, 11, 12}  //
   });
-  std::cout << m(2, 1) << std::endl;
+  std::cout << m << std::endl;
   Vector<double> s;
   Matrix<double> u;
   Matrix<double> v;
   m.svd(s, u, v);
+  std::cout << "S = " << s << std::endl;
+  std::cout << "U = " << u << std::endl;
+  std::cout << "Vt = " << v << std::endl;
+
+  Matrix<double> s2(3, 4);
+  for (int i = 0; i < 3; ++i) {
+    s2[i][i] = s[i];
+  }
+
+  auto m3 = u * s2 * v;
+  // m3.reshape(3, 4);
+  std::cout << m3 << std::endl;
 }

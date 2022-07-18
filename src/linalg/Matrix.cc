@@ -173,9 +173,9 @@ int Matrix<double>::svd(Vector<double> &s, Matrix<double> &u,
   Vector<double> superb(std::min(m_ROW, m_COL));
   u.reshape(m_COL, m_COL);
   v.reshape(m_ROW, m_ROW);
-  s.reshape(std::max(m_COL, m_ROW));
-  return LAPACKE_dgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_ROW, m_COL, *this, m_ROW,
-                        s, u, m_ROW, v, m_COL, superb);
+  s.reshape(std::min(m_COL, m_ROW));
+  return LAPACKE_dgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
+                        s, u, m_COL, v, m_ROW, superb);
 }
 
 template <>
@@ -183,9 +183,9 @@ int Matrix<float>::svd(Vector<float> &s, Matrix<float> &u, Matrix<float> &v) {
   Vector<float> superb(std::min(m_ROW, m_COL));
   u.reshape(m_COL, m_COL);
   v.reshape(m_ROW, m_ROW);
-  s.reshape(std::max(m_COL, m_ROW));
-  return LAPACKE_sgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_ROW, m_COL, *this, m_ROW,
-                        s, u, m_ROW, v, m_COL, superb);
+  s.reshape(std::min(m_COL, m_ROW));
+  return LAPACKE_sgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
+                        s, u, m_COL, v, m_ROW, superb);
 }
 
 template <FloatingPointType T>
