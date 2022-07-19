@@ -24,7 +24,8 @@ template <FloatingPointType T = double>
 class Matrix {
  public:
   // Constructors
-  Matrix(int col, int row) : m_data(col * row), m_COL(col), m_ROW(row) {}
+  Matrix(int col, int row, T val = 0.)
+      : m_data(col * row, val), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0), m_COL(0), m_ROW(0) {}
   Matrix(const Matrix &mat)
       : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
