@@ -29,6 +29,8 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
         test/Vector_test.cc
         test/lapacke_test.cc
         test/openmp_test.cc
+        test/Fraction_test.cc
+        test/Quantity_test.cc
         )
     target_link_libraries(
         physics_test
