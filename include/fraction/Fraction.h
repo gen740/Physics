@@ -16,8 +16,8 @@ template <integral T = int_fast32_t>
 struct frac {
  public:
   // nume / deno
-  T deno{1};  // 分母
   T nume{1};  // 分子
+  T deno{1};  // 分母
  public:
   frac() = default;
   constexpr frac(T nume, T deno) {
@@ -36,6 +36,19 @@ struct frac {
   frac(frac const &frac) = default;
   frac(frac &&frac) = default;
   ~frac() = default;
+
+  constexpr T get_numerator() const { return nume; }
+  constexpr T get_denominator() const { return deno; }
+
+  std::string to_str() const {
+    if (deno == 1) {
+      return std::to_string(nume);
+    } else if (nume == 0) {
+      return "0";
+    } else {
+      return (std::to_string(nume) + "/" + std::to_string(deno));
+    }
+  }
 
  private:
   constexpr void add(const frac &a) {

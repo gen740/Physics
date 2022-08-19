@@ -37,6 +37,8 @@ TEST(Fraction, Basic) {
 
   std::cout << (f1 > f2) << std::endl;
   std::cout << (f1 == f2) << std::endl;
+  f1 = 0;
+  EXPECT_DOUBLE_EQ(f1.eval(), 0);
 }
 
 TEST(Fraction, Advance) {}

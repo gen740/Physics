@@ -1,17 +1,16 @@
 #pragma once
 #include <fraction/Fraction.h>
 
-namespace Quantity {
+namespace Quantity_Base {
 using Fraction::frac;
 
-template <frac L = 0, frac M = 0,  //
-          frac T = 0, frac I = 0>
+template <frac L = 0, frac M = 0, frac T = 0, frac I = 0, class Vtype = double>
 class Quantity_base {
  public:
-  Quantity_base() {}
-  Quantity_base(double value) : value(value) {}
+  constexpr Quantity_base() {}
+  constexpr Quantity_base(double value) : value(value) {}
 
-  double value;
+  double value{0.0};
 
   void repl() {
     std::cout << "L: " << L << std::endl;
@@ -29,6 +28,8 @@ class Quantity_base {
   constexpr bool is_same_dim_as(Quantity_base<LL, MM, TT, II>) {
     return (L == LL) && (M == MM) && (T == TT) && (I == II);
   }
+
+  constexpr explicit operator double() { return value; }
 
   // Allow same dimenthion add / sub
   constexpr Quantity_base<L, M, T, I> add(const Quantity_base<L, M, T, I> &x) {
@@ -86,9 +87,9 @@ class Quantity_base {
       std::ostream &os, const Quantity_base<LL, MM, TT, II> &frac);
 
   // + operator
-  template <frac... D>
-  constexpr friend Quantity_base<D...> operator+(Quantity_base<D...> x,
-                                                 const Quantity_base<D...> &y);
+  template <frac LL, frac MM, frac TT, frac II>
+  constexpr friend Quantity_base<LL, MM, TT, II> operator+(
+      Quantity_base<LL, MM, TT, II> x, const Quantity_base<LL, MM, TT, II> &y);
 
   // - operator
   template <frac LL, frac MM, frac TT, frac II>
@@ -128,14 +129,15 @@ class Quantity_base {
 template <frac L, frac M, frac T, frac I>
 constexpr std::ostream &operator<<(std::ostream &os,
                                    const Quantity_base<L, M, T, I> &quantity) {
-  os << "<Quantity:" << quantity.value << "<" << L << "," << M << "," << T
-     << "," << I << ">>";
+  os << quantity.value << " <"  //
+     << L.to_str() << "," << M.to_str() << "," << T.to_str() << ","
+     << I.to_str() << ">";
   return os;
 }
 
-template <frac... D>
-constexpr Quantity_base<D...> operator+(Quantity_base<D...> x,
-                                        const Quantity_base<D...> &y) {
+template <frac L, frac M, frac T, frac I>
+constexpr Quantity_base<L, M, T, I> operator+(
+    Quantity_base<L, M, T, I> x, const Quantity_base<L, M, T, I> &y) {
   return x.add(y);
 }
 
@@ -223,4 +225,4 @@ constexpr Quantity_base<L, M, T, I> hypot(const Quantity_base<L, M, T, I> &x,
   return {std::hypot(x.value, y.value, z.value)};
 }
 
-}  // namespace Quantity
+}  // namespace Quantity_Base
