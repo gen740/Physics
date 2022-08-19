@@ -31,17 +31,12 @@ TEST(Fraction, Basic) {
   frac<> f2(6, 7);
   EXPECT_DOUBLE_EQ((f1 + f2).eval(), 45. / 28);
   EXPECT_DOUBLE_EQ((f1 - f2).eval(), -3. / 28);
+  EXPECT_DOUBLE_EQ((-f2).eval(), -6. / 7);
   EXPECT_DOUBLE_EQ((f1 * f2).eval(), 9. / 14);
   EXPECT_DOUBLE_EQ((f1 / f2).eval(), 7. / 8);
+
   std::cout << (f1 > f2) << std::endl;
   std::cout << (f1 == f2) << std::endl;
 }
 
-TEST(Fraction, Advance) {
-  frac<> f1(3, 4);
-  frac<> f2(6, 7);
-  EXPECT_DOUBLE_EQ((f1 + f2).eval(), 45. / 28);
-  EXPECT_DOUBLE_EQ((f1 - f2).eval(), -3. / 28);
-  EXPECT_DOUBLE_EQ((f1 * f2).eval(), 9. / 14);
-  EXPECT_DOUBLE_EQ((f1 / f2).eval(), 7. / 8);
-}
+TEST(Fraction, Advance) {}

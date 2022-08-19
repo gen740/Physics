@@ -102,6 +102,9 @@ struct frac {
   template <integral U, integral V>
   constexpr friend frac<U> operator-(frac<U> a, const frac<V> &b);
 
+  template <integral U>
+  constexpr friend frac<U> operator-(frac<U> a);
+
   template <integral U, integral V>
   constexpr friend frac<U> operator*(frac<U> a, const frac<V> &b);
 
@@ -150,6 +153,11 @@ template <integral U, integral V>
 constexpr frac<U> operator-(frac<U> a, const frac<V> &b) {
   a.sub(b);
   return a;
+}
+
+template <integral U>
+constexpr frac<U> operator-(frac<U> a) {
+  return {-a.nume, a.deno};
 }
 
 template <integral U, integral V>
