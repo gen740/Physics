@@ -56,7 +56,7 @@ int main() {
   std::cout << x << std::endl;
 
   // Newton's laws
-  Quantity_Base::Quantity_base<3, -1, -2, 0> G;
+  auto G = Quantity::make_quant<3, -1, -2, 0>();
   Quantity::Mass m;
   Quantity::Mass M;
   Quantity::Length r;
@@ -69,36 +69,36 @@ int main() {
 
 `Quantity::Literals` namespace provides a lot of literals.
 
-|  Literals      |    physical quantity       |
-| ------------- |-------------  |
-|_m| meter|
-|_mm| millimeter|
-|_m2| square meter |
-|_mm2| square millimeter |
-|_m3| cube meter|
-|_mm3| cube millimeter|
-|_kg| kilogram|
-|_sec| second|
-|_s| second|
-|_ms| millisecond|
-|_us| microsecond|
-|_ns| nanosecond|
-|_sqrt_s| sqrt second|
-|_A| ampere|
-|_mA| milli ampere|
-|_Hz| Hertz|
-|_rad| radian|
-|_deg| degree|
-|_mN| millinewton|
-|_Nm| newton meter|
-|_mNm| milli newton meter|
-|_uNm| micro newton meter|
-|_kgm2| kg meter meter|
-|_kgmm2| kg millimeter millimeter|
-|_V| volt|
-|_mV| milli volt|
-|_ohm| ohm|
-|_H| henry|
-|_uH| micro henry|
-|_uWb| micro weber|
-|_Wb| weber|
+| Literals      | physical quantity        |
+| ------------- | ------------------------ |
+| _m            | meter                    |
+| _mm           | millimeter               |
+| _m2           | square meter             |
+| _mm2          | square millimeter        |
+| _m3           | cube meter               |
+| _mm3          | cube millimeter          |
+| _kg           | kilogram                 |
+| _sec          | second                   |
+| _s            | second                   |
+| _ms           | millisecond              |
+| _us           | microsecond              |
+| _ns           | nanosecond               |
+| _sqrt_s       | sqrt second              |
+| _A            | ampere                   |
+| _mA           | milli ampere             |
+| _Hz           | Hertz                    |
+| _rad          | radian                   |
+| _deg          | degree                   |
+| _mN           | millinewton              |
+| _Nm           | newton meter             |
+| _mNm          | milli newton meter       |
+| _uNm          | micro newton meter       |
+| _kgm2         | kg meter meter           |
+| _kgmm2        | kg millimeter millimeter |
+| _V            | volt                     |
+| _mV           | milli volt               |
+| _ohm          | ohm                      |
+| _H            | henry                    |
+| _uH           | micro henry              |
+| _uWb          | micro weber              |
+| _Wb           | weber                    |

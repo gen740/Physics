@@ -22,7 +22,7 @@ int main() {
   std::cout << x << std::endl;
 
   // Newton's laws
-  Quantity_Base::Quantity_base<3, -1, -2, 0> G;
+  auto G = Quantity::make_quant<3, -1, -2, 0>();
   Quantity::Mass m;
   Quantity::Mass M;
   Quantity::Length r;
