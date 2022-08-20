@@ -13,8 +13,7 @@ using DimensionLess = Quantity_Base::Quantity_base<>;
 using Length = Quantity_Base::Quantity_base<1, 0, 0, 0>;
 using Mass = Quantity_Base::Quantity_base<0, 1, 0, 0>;
 using Time = Quantity_Base::Quantity_base<0, 0, 1, 0>;
-using SqrtTime =
-    Quantity_Base::Quantity_base<0, 0, Quantity_Base::frac{1, 2}, 0>;
+using SqrtTime = Quantity_Base::Quantity_base<0, 0, Quantity_Base::frac{1, 2}, 0>;
 using Current = Quantity_Base::Quantity_base<0, 0, 0, 1>;
 using Area = decltype(pow<2>(Length{}));
 using Volume = decltype(pow<3>(Length{}));

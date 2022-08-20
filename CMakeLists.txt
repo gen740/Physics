@@ -41,4 +41,10 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
 
     include(GoogleTest)
     gtest_discover_tests(physics_test)
+
+    ## examples
+    add_custom_target(examples ALL)
+    add_executable(quantity EXCLUDE_FROM_ALL examples/quantity/quantity.cc)
+    target_link_libraries(quantity physics)
+    add_dependencies(examples quantity)
 endif()
