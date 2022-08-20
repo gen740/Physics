@@ -43,8 +43,12 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     gtest_discover_tests(physics_test)
 
     ## examples
-    add_custom_target(examples ALL)
-    add_executable(quantity EXCLUDE_FROM_ALL examples/quantity/quantity.cc)
+    add_custom_target(examples )
+
+    add_executable(quantity EXCLUDE_FROM_ALL examples/quantity.cc)
     target_link_libraries(quantity physics)
-    add_dependencies(examples quantity)
+
+    add_executable(matrix EXCLUDE_FROM_ALL examples/matrix.cc)
+    target_link_libraries(matrix physics)
+    add_dependencies(examples quantity matrix)
 endif()

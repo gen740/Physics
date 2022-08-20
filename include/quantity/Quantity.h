@@ -152,9 +152,11 @@ QUANTITY_DECLARE_LITERAL(V, volt)
 QUANTITY_DECLARE_LITERAL(mV, milli* volt)
 QUANTITY_DECLARE_LITERAL(ohm, ohm)
 QUANTITY_DECLARE_LITERAL(H, henry)
+QUANTITY_DECLARE_LITERAL(mH, milli* henry)
 QUANTITY_DECLARE_LITERAL(uH, micro* henry)
-QUANTITY_DECLARE_LITERAL(uWb, micro* weber)
 QUANTITY_DECLARE_LITERAL(Wb, weber)
+QUANTITY_DECLARE_LITERAL(mWb, milli* weber)
+QUANTITY_DECLARE_LITERAL(uWb, micro* weber)
 
 template <Fraction::frac<> L, Fraction::frac<> M, Fraction::frac<> T,
           Fraction::frac<> I>

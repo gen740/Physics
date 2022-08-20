@@ -99,6 +99,8 @@ int main() {
 | _mV           | milli volt               |
 | _ohm          | ohm                      |
 | _H            | henry                    |
+| _mH           | milli henry              |
 | _uH           | micro henry              |
-| _uWb          | micro weber              |
 | _Wb           | weber                    |
+| _mWb          | milli weber              |
+| _uWb          | micro weber              |
