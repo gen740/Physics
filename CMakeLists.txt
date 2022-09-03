@@ -21,7 +21,6 @@ set(CMAKE_CXX_FLAGS "-std=c++20 ${CMAKE_CXX_FLAGS}")
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     find_package(GTest)
-
     enable_testing()
     add_executable(
         physics_test
