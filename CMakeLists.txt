@@ -30,6 +30,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
         test/openmp_test.cc
         test/Fraction_test.cc
         test/Quantity_test.cc
+        test/generator_test.cc
         )
     target_link_libraries(
         physics_test
@@ -42,7 +43,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     gtest_discover_tests(physics_test)
 
     ## examples
-    add_custom_target(examples )
+    add_custom_target(examples)
 
     add_executable(quantity EXCLUDE_FROM_ALL examples/quantity.cc)
     target_link_libraries(quantity physics)

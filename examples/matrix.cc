@@ -1,5 +1,6 @@
 #include <linalg/Matrix.h>
 
+#include <cassert>
 #include <iostream>
 
 int main() {
@@ -16,6 +17,5 @@ int main() {
 
   // Matrix has some basic linear algebra functions.
   std::cout << m.det() << std::endl;
-
   return 0;
 }

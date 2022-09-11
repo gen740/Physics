@@ -50,9 +50,8 @@ Matrix<T>::Matrix(const Vector<T> &vec, int col, int row)
 }
 
 template <FloatingPointType T>
-Matrix<T>::Matrix(std::vector<std::vector<T>> vec) {
-  m_COL = vec.size();
-  m_ROW = vec[0].size();
+Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
+    : m_COL(vec.size()), m_ROW(vec[0].size()) {
   for (int i = 1; i < m_COL; ++i) {
     if (m_ROW != vec[i].size()) {
       throw std::runtime_error("Matrix Constructor recieve none matrix vector");
@@ -212,18 +211,16 @@ template <FloatingPointType T>
 T &Matrix<T>::operator()(int col, int row) {
   if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) {
     return m_data[(row - 1) * m_COL + (col - 1)];
-  } else {
-    throw std::runtime_error("Index out of range");
   }
+  throw std::runtime_error("Index out of range");
 }
 
 template <FloatingPointType T>
 T Matrix<T>::operator()(int col, int row) const {
   if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) {
     return m_data[(row - 1) * m_COL + (col - 1)];
-  } else {
-    throw std::runtime_error("Index out of range");
   }
+  throw std::runtime_error("Index out of range");
 }
 
 template <>
