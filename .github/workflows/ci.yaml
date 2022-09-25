@@ -25,8 +25,8 @@ jobs:
   Physic_test_MacOS:
     runs-on: macos-latest
     env:
-      CXX: clang++-15
-      CC: clang-15
+      CXX: /usr/local/opt/llvm/bin/clang++
+      CC: /usr/local/opt/llvm/bin/clang
       LD_LIBRARY_PATH: /usr/local/lib
     steps:
       - name: Checkout
