@@ -38,6 +38,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
         GTest::gtest_main
         OpenMP::OpenMP_CXX
         physics
+        lapacke
         )
 
     include(GoogleTest)
