@@ -7,8 +7,6 @@ jobs:
       CXX: clang++-15
       CC: clang-15
       LD_LIBRARY_PATH: /usr/local/lib
-      PATH: /usr/local/bin:$PATH
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
