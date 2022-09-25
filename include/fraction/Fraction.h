@@ -12,7 +12,7 @@ namespace Fraction {
 template <class T>
 concept integral = std::is_integral_v<T>;
 
-template <integral T = int_fast32_t>
+template <integral T = int>
 struct frac {
  public:
   // nume / deno

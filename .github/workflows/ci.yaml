@@ -9,11 +9,11 @@ jobs:
       - name: install llvm latest
         run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
       - name: install openmp
-        run: sudo apt-get install -y libomp-dev
+        run: sudo apt-get install -y libgtest-dev
       - name: build openblas
-        run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && make install
+        run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
       - name: cmake
-        run: env "CXX=clang++-15" "CC=clang-15" cmake . -B build
+        run: env "CXX=clang++-15" "CC=clang-15" "LD_LIBRARY_PATH=/usr/local/lib" "PATH=/usr/local/bin:$PATH" cmake . -B build
       - name: build
         run: cmake --build build
       - name: test
