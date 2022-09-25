@@ -10,7 +10,6 @@ add_library(physics ${_PHYSICS_SOURCES})
 
 find_package(OpenBlas CONFIG)
 find_package(OpenMP REQUIRED)
-find_package(lapacke CONFIG)
 
 target_include_directories(physics PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 target_link_libraries(physics PRIVATE openblas)
@@ -38,7 +37,6 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
         GTest::gtest_main
         OpenMP::OpenMP_CXX
         physics
-        lapacke
         )
 
     include(GoogleTest)

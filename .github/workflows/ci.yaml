@@ -13,9 +13,9 @@ jobs:
       - name: install llvm latest
         run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
       - name: install openmp
-        run: sudo apt-get install -y libgtest-dev libomp-15-dev libopenblas-dev liblapacke
-      # - name: build openblas
-      #   run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
+        run: sudo apt-get install -y libgtest-dev libomp-15-dev
+      - name: build openblas
+        run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
       - name: cmake
         run: cmake . -B build
       - name: build
