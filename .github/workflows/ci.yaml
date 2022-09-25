@@ -8,8 +8,10 @@ jobs:
         uses: actions/checkout@v3
       - name: install llvm latest
         run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-      - name: install openblas
-        run: sudo apt install libopenblas-dev libomp-dev
+      - name: install openmp
+        run: sudo apt-get -y libomp-dev
+      - name: build openblas
+        run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && make install
       - name: cmake
         run: env "CXX=clang++-15" "CC=clang-15" cmake . -B build
       - name: build
