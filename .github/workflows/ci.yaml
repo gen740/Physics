@@ -1,0 +1,18 @@
+name: Physics-test
+on: [push]
+jobs:
+  Clang_test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: install llvm latest
+        run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+      - name: install openblas
+        run: sudo apt install libopenblas-dev libomp-dev
+      - name: cmake
+        run: env "CXX=clang++-15" "CC=clang-15" cmake . -B build
+      - name: build
+        run: cmake --build build
+      - name: test
+        run: cmake --build build --target test
