@@ -1,8 +1,29 @@
 name: Physics-test
 on: [push]
 jobs:
-  Clang_test:
-    runs-on: ubuntu-22.04
+  # Physics_test_Ubuntu:
+  #   runs-on: ubuntu-22.04
+  #   env:
+  #     CXX: clang++-15
+  #     CC: clang-15
+  #     LD_LIBRARY_PATH: /usr/local/lib
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: install llvm latest
+  #       run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+  #     - name: install openmp
+  #       run: sudo apt-get install -y libgtest-dev libomp-15-dev
+  #     - name: build openblas
+  #       run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
+  #     - name: cmake
+  #       run: cmake . -B build
+  #     - name: build
+  #       run: cmake --build build
+  #     - name: test
+  #       run: cmake --build build --target test
+  Physic_test_MacOS:
+    runs-on: macos-latest
     env:
       CXX: clang++-15
       CC: clang-15
@@ -11,9 +32,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: install llvm latest
-        run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+        run: brew install llvm
       - name: install openmp
-        run: sudo apt-get install -y libgtest-dev libomp-15-dev
+        run: brew install googletest
       - name: build openblas
         run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
       - name: cmake
