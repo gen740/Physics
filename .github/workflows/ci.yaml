@@ -31,6 +31,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: install dependencies
+        run: brew install llvm googletest openblas libomp
+      - name: cmake
+        run: cmake . -B build
+      - name: build
+        run: cmake --build build
+      - name: test
+        run: cmake --build build --target test
+
+  Physic_test_MacOS_PkgConfig:
+    runs-on: macos-latest
+    env:
+      CXX: /usr/local/opt/llvm/bin/clang++
+      CC: /usr/local/opt/llvm/bin/clang
+      PKG_CONFIG_PATH: /usr/local/opt/openblas/lib/pkgconfig
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: install llvm latest
         run: brew install llvm
       - name: install openmp

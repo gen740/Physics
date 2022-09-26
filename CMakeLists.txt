@@ -16,14 +16,16 @@ find_package(OpenMP REQUIRED)
 
 target_include_directories(physics PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 
-if(DEFINED $OpenBLAS_DIR)
+# Find OpenBLAS
+if(NOT $ENV{OpenBLAS_DIR} STREQUAL "")
     find_package(OpenBLAS REQUIRED)
     target_include_directories(physics PUBLIC ${OpenBLAS_INCLUDE_DIRS})
     target_link_libraries(physics PRIVATE ${OpenBLAS_LIBRARIES})
 else()
     find_package(PkgConfig)
-    pkg_check_modules(OpenBlas REQUIRED openblas)
-    target_link_libraries(physics PRIVATE openblas)
+    pkg_check_modules(OpenBLAS REQUIRED openblas)
+    target_include_directories(physics PUBLIC ${OpenBLAS_INCLUDE_DIRS})
+    target_link_libraries(physics PRIVATE ${OpenBLAS_LINK_LIBRARIES})
 endif()
 
 # C++20 の有効化
