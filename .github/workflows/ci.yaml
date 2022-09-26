@@ -1,27 +1,50 @@
 name: Physics-test
 on: [push]
 jobs:
-  # Physics_test_Ubuntu:
-  #   runs-on: ubuntu-22.04
-  #   env:
-  #     CXX: clang++-15
-  #     CC: clang-15
-  #     LD_LIBRARY_PATH: /usr/local/lib
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: install llvm latest
-  #       run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-  #     - name: install openmp
-  #       run: sudo apt-get install -y libgtest-dev libomp-15-dev
-  #     - name: build openblas
-  #       run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
-  #     - name: cmake
-  #       run: cmake . -B build
-  #     - name: build
-  #       run: cmake --build build
-  #     - name: test
-  #       run: cmake --build build --target test
+  Physics_test_Ubuntu:
+    runs-on: ubuntu-22.04
+    env:
+      CXX: /usr/bin/clang++-15
+      CC: /usr/bin/clang-15
+      OpenBLAS_DIR: /usr/lib/x86_64-linux-gnu/openblas-pthread
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: install llvm latest
+        run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+      - name: install dependencies
+        run: sudo apt-get install -y libgtest-dev libomp-15-dev libopenblas-dev
+      # - name: build openblas
+      #   run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
+      - name: cmake
+        run: cmake . -B build
+      - name: build
+        run: cmake --build build
+      - name: test
+        run: cmake --build build --target test
+
+  Physics_test_Ubuntu_PkgConfig:
+    runs-on: ubuntu-22.04
+    env:
+      CXX: /usr/bin/clang++-15
+      CC: /usr/bin/clang-15
+      PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: install llvm latest
+        run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+      - name: install dependencies
+        run: sudo apt-get install -y libgtest-dev libomp-15-dev libopenblas-dev
+      # - name: build openblas
+      #   run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
+      - name: cmake
+        run: cmake . -B build
+      - name: build
+        run: cmake --build build
+      - name: test
+        run: cmake --build build --target test
+
   Physic_test_MacOS:
     runs-on: macos-latest
     env:
@@ -49,12 +72,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: install llvm latest
-        run: brew install llvm
-      - name: install openmp
-        run: brew install googletest
-      - name: install openblas
-        run: brew install openblas libomp
+      - name: install dependencies
+        run: brew install llvm googletest openblas libomp
       - name: cmake
         run: cmake . -B build
       - name: build
