@@ -16,12 +16,11 @@ find_package(OpenMP REQUIRED)
 
 target_include_directories(physics PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 
-if(DEFINED $OpenBLAS_PATH)
+if(DEFINED $OpenBLAS_DIR)
     find_package(OpenBLAS REQUIRED)
     target_include_directories(physics PUBLIC ${OpenBLAS_INCLUDE_DIRS})
     target_link_libraries(physics PRIVATE ${OpenBLAS_LIBRARIES})
 else()
-    find_package(PkgConfig)
     find_package(PkgConfig)
     pkg_check_modules(OpenBlas REQUIRED openblas)
     target_link_libraries(physics PRIVATE openblas)
