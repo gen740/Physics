@@ -28,6 +28,7 @@ jobs:
       CXX: /usr/local/opt/llvm/bin/clang++
       CC: /usr/local/opt/llvm/bin/clang
       LD_LIBRARY_PATH: /usr/local/lib
+      CPLUS_INCLUDE_PATH: /usr/local/opt/openblas/include
     steps:
       - name: Checkout
         uses: actions/checkout@v3

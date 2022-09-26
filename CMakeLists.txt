@@ -8,6 +8,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 message(${_PHYSICS_SOURCES})
 add_library(physics ${_PHYSICS_SOURCES})
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOSX TRUE)
+endif()
+
 find_package(OpenBlas CONFIG)
 find_package(OpenMP REQUIRED)
 
