@@ -35,8 +35,10 @@ jobs:
         run: brew install llvm
       - name: install openmp
         run: brew install googletest
-      - name: build openblas
-        run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
+      - name: install openblas
+        run: brew install openblas libomp
+      # - name: build openblas
+      #   run: git clone https://github.com/xianyi/OpenBLAS.git && cd OpenBLAS && make && sudo make install PREFIX=/usr/local
       - name: cmake
         run: cmake . -B build
       - name: build
