@@ -12,11 +12,20 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-find_package(OpenBlas CONFIG)
 find_package(OpenMP REQUIRED)
 
 target_include_directories(physics PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
-target_link_libraries(physics PRIVATE openblas)
+
+if(DEFINED $OpenBLAS_PATH)
+    find_package(OpenBLAS REQUIRED)
+    target_include_directories(physics PUBLIC ${OpenBLAS_INCLUDE_DIRS})
+    target_link_libraries(physics PRIVATE ${OpenBLAS_LIBRARIES})
+else()
+    find_package(PkgConfig)
+    find_package(PkgConfig)
+    pkg_check_modules(OpenBlas REQUIRED openblas)
+    target_link_libraries(physics PRIVATE openblas)
+endif()
 
 # C++20 の有効化
 enable_language(CXX)
