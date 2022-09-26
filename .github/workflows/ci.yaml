@@ -6,7 +6,7 @@ jobs:
     env:
       CXX: /usr/bin/clang++-15
       CC: /usr/bin/clang-15
-      OpenBLAS_DIR: /usr/lib/x86_64-linux-gnu/openblas-pthread
+      OpenBLAS_DIR: /usr/lib/x86_64-linux-gnu/openblas-pthread/cmake
     steps:
       - name: Checkout
         uses: actions/checkout@v3
