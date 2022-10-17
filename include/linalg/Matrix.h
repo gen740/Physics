@@ -1,5 +1,4 @@
 #pragma once
-#include <lapacke.h>
 
 #include <array>
 #include <iosfwd>

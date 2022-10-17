@@ -1,5 +1,11 @@
 #include <gtest/gtest.h>
+
+#ifdef PHYSICS_USE_MKL
+#include <mkl_lapacke.h>
+#else
 #include <lapacke.h>
+#endif
+
 #include <linalg/Matrix.h>
 
 #include <array>

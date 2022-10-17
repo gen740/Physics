@@ -12,13 +12,13 @@ namespace Fraction {
 template <class T>
 concept integral = std::is_integral_v<T>;
 
-template <integral T = int>
+template <integral T = int_fast32_t>
 struct frac {
  public:
   // nume / deno
   T nume{1};  // 分子
   T deno{1};  // 分母
- public:
+
   frac() = default;
   constexpr frac(T nume, T deno) {
     auto r = std::gcd(deno, nume);
@@ -34,20 +34,20 @@ struct frac {
   };
   constexpr frac(T n) : deno(1), nume(n) {}
   frac(frac const &frac) = default;
-  frac(frac &&frac) = default;
+  frac(frac &&frac) noexcept = default;
   ~frac() = default;
 
   constexpr T get_numerator() const { return nume; }
   constexpr T get_denominator() const { return deno; }
 
-  std::string to_str() const {
+  [[nodiscard]] std::string to_str() const {
     if (deno == 1) {
       return std::to_string(nume);
-    } else if (nume == 0) {
-      return "0";
-    } else {
-      return (std::to_string(nume) + "/" + std::to_string(deno));
     }
+    if (nume == 0) {
+      return "0";
+    }
+    return (std::to_string(nume) + "/" + std::to_string(deno));
   }
 
  private:
@@ -136,14 +136,13 @@ struct frac {
   template <integral U, integral V>
   constexpr friend bool operator==(frac<U>, frac<V>);
 
- public:
   template <integral U>
   constexpr auto operator<=>(const frac<U> &x) const {
     return this->eval() <=> x.eval();
   }
 
-  constexpr void operator++(int a) { add(1); }
-  constexpr void operator--(int a) { sub(1); }
+  constexpr void operator++([[maybe_unused]] int a) { add(1); }
+  constexpr void operator--([[maybe_unused]] int a) { sub(1); }
 };
 
 template <integral T>

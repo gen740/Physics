@@ -27,7 +27,10 @@ int main() {
   Quantity::Mass M;
   Quantity::Length r;
 
-  assert((G * m * M / pow<2>(r)).is_same_dim_as(Quantity::Force{}));
+  // assert((G * m * M / pow<2>(r)).is_same_dim_as(Quantity::Force{}));
+
+  Quantity::Energy energy = 1_j;
+  std::cout << energy / Quantity::electron_volt << std::endl;
 
   return 0;
 }

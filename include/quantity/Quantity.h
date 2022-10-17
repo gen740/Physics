@@ -89,6 +89,8 @@ constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(std::numbers::pi / 180);
 constexpr Force newton = Force(1.0);
 constexpr Force millinewton = milli * newton;
+constexpr Energy joule = newton * meter;
+constexpr Energy electron_volt = 1.602'176'634e-19 * joule;
 constexpr Voltage volt = Voltage(1.0);
 constexpr Voltage millivolt = milli * volt;
 constexpr Voltage microvolt = micro * volt;
@@ -108,10 +110,10 @@ inline namespace Literals {
 
 #define QUANTITY_DECLARE_LITERAL(postfix, unit)                   \
   constexpr auto operator""_##postfix(long double value) {        \
-    return unit * value;                                          \
+    return (unit)*value;                                          \
   }                                                               \
   constexpr auto operator""_##postfix(unsigned long long value) { \
-    return unit * value;                                          \
+    return (unit)*value;                                          \
   }
 
 QUANTITY_DECLARE_LITERAL(mm, millimeter)
@@ -137,6 +139,10 @@ QUANTITY_DECLARE_LITERAL(mA, milli* ampere)
 QUANTITY_DECLARE_LITERAL(Hz, 1.0 / sec)
 QUANTITY_DECLARE_LITERAL(rad, rad)
 QUANTITY_DECLARE_LITERAL(deg, std::numbers::pi / 180 * rad)
+QUANTITY_DECLARE_LITERAL(j, joule)
+QUANTITY_DECLARE_LITERAL(eV, electron_volt)
+QUANTITY_DECLARE_LITERAL(MeV, mega* electron_volt)
+QUANTITY_DECLARE_LITERAL(KeV, kilo* electron_volt)
 
 // #pragma push_macro("_N")
 // #undef _N

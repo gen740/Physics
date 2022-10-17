@@ -1,7 +1,12 @@
 #include "linalg/Matrix.h"
 
+#ifdef PHYSICS_USE_MKL
+#include <mkl_cblas.h>
+#include <mkl_lapacke.h>
+#else
 #include <cblas.h>
 #include <lapacke.h>
+#endif
 
 #include <algorithm>
 #include <exception>
@@ -231,7 +236,7 @@ Matrix<double> Matrix<double>::operator*(Matrix<double> mat) {
   }
   Matrix<double> ret(m_COL, mat_shape[1]);
   cblas_dgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.shape()[1], m_ROW, 1,
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, 1,
               *this, m_COL, mat, mat_shape[0], 1, ret, m_COL);
   return ret;
 }
@@ -244,7 +249,7 @@ Matrix<float> Matrix<float>::operator*(Matrix<float> mat) {
   }
   Matrix<float> ret(m_COL, mat_shape[1]);
   cblas_sgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.shape()[1], m_ROW, 1,
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, 1,
               *this, m_COL, mat, mat_shape[0], 1, ret, m_COL);
   return ret;
 }
