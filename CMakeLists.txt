@@ -15,7 +15,7 @@ endif()
 find_package(OpenMP REQUIRED)
 
 target_include_directories(physics PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
-set(USE_MKL true)
+# set(USE_MKL true)
 
 if(${USE_MKL})
     # Find MKL
