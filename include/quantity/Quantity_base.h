@@ -2,12 +2,9 @@
 #include <fraction/Fraction.h>
 
 namespace Quantity_Base {
-using Fraction::frac;
+using frac = Fraction::frac<int_fast32_t>;
 
-template <frac L = static_cast<int_fast32_t>(0),
-          frac M = static_cast<int_fast32_t>(0),
-          frac T = static_cast<int_fast32_t>(0),
-          frac I = static_cast<int_fast32_t>(0), class Vtype = double>
+template <frac L = 0, frac M = 0, frac T = 0, frac I = 0, class Vtype = double>
 class Quantity_base {
  public:
   constexpr Quantity_base() = default;
@@ -22,10 +19,10 @@ class Quantity_base {
     std::cout << "I: " << I << std::endl;
   }
 
-  constexpr frac<> get_L() { return L; }
-  constexpr frac<> get_M() { return M; }
-  constexpr frac<> get_T() { return T; }
-  constexpr frac<> get_I() { return I; }
+  constexpr frac get_L() { return L; }
+  constexpr frac get_M() { return M; }
+  constexpr frac get_T() { return T; }
+  constexpr frac get_I() { return I; }
 
   template <frac LL, frac MM, frac TT, frac II>
   constexpr bool is_same_dim_as(Quantity_base<LL, MM, TT, II> /*unused*/) {

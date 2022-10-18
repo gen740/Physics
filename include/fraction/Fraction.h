@@ -32,7 +32,7 @@ struct frac {
       this->deno *= -1;
     }
   };
-  constexpr frac(T n) : deno(1), nume(n) {}
+  constexpr frac(T n) : nume(n), deno(1) {}
   frac(frac const &frac) = default;
   frac(frac &&frac) noexcept = default;
   ~frac() = default;
