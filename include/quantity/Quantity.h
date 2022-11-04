@@ -165,8 +165,8 @@ QUANTITY_DECLARE_LITERAL(Wb, weber)
 QUANTITY_DECLARE_LITERAL(mWb, milli* weber)
 QUANTITY_DECLARE_LITERAL(uWb, micro* weber)
 
-template <Fraction::frac<> L, Fraction::frac<> M, Fraction::frac<> T,
-          Fraction::frac<> I>
+template <Quantity_Base::frac L, Quantity_Base::frac M, Quantity_Base::frac T,
+          Quantity_Base::frac I>
 static inline auto make_quant(double value = 0) {
   return Quantity_Base::Quantity_base<L, M, T, I>(value);
 }

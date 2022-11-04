@@ -80,10 +80,9 @@ TEST(Quantity, Basic) {
 }
 
 TEST(Quantity, Units) {
-  using namespace Quantity;
   // std::cout << DimensionLess(1) << std::endl;
   // std::cout << Length(1) / Time(1) << std::endl;
-  Vel v(3.4);
+  Quantity::Vel v(3.4);
   EXPECT_TRUE(v.is_same_dim_as(Quantity_base<1, 0, -1, 0>{}));
 }
 
