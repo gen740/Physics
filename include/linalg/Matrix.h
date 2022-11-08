@@ -16,8 +16,8 @@ class Vector;
 struct LU_status {
   int status{};
   std::vector<int> ipiv;
-  operator int() const { return status; }
-  LU_status(int size) : ipiv(size) {}
+  explicit operator int() const { return status; }
+  explicit LU_status(int size) : ipiv(size) {}
 };
 
 template <FloatingPointType T = double>
@@ -26,9 +26,10 @@ class Matrix {
   // Constructors
   using BaseType = std::conditional_t<
       std::is_same_v<T, double>, double,
-      std::conditional_t<std::is_same_v<T, float>, float,
-                         std::conditional_t<std::is_same_v<T, _Complex double>,
-                                            double, float>>>;
+      std::conditional_t<
+          std::is_same_v<T, float>, float,
+          std::conditional_t<std::is_same_v<T, std::complex<double>>, double,
+                             float>>>;
   Matrix(int col, int row, T val = 0.)
       : m_data(col * row, val), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0) {}
@@ -38,6 +39,7 @@ class Matrix {
   Matrix(Matrix<T> &&mat, int col, int row);
   Matrix(const Vector<T> &vec, int col, int row);
   Matrix(std::vector<std::vector<T>> vec);
+  ~Matrix() = default;
 
   void reshape(int col, int row) {
     if (col == m_COL && row == m_ROW) {

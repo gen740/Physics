@@ -16,13 +16,18 @@ Diagnostics:
       - readability*
       - cppcoreguidelines*
     Remove:
-      - modernize-use-trailing-return-type
-      - readability-magic-numbers
-      - readability-uppercase-literal-suffix
-      - readability-identifier-length
-      - readability-identifier-naming
       - cppcoreguidelines-avoid-magic-numbers
       - cppcoreguidelines-avoid-non-const-global-variables
+      - cppcoreguidelines-init-variables
+      - cppcoreguidelines-owning-memory
+      - cppcoreguidelines-pro-bounds-pointer-arithmetic
+      - cppcoreguidelines-pro-type-reinterpret-cast
+      - google-explicit-constructor
+      - modernize-use-trailing-return-type
+      - readability-identifier-length
+      - readability-identifier-naming
+      - readability-magic-numbers
+      - readability-uppercase-literal-suffix
 
 InlayHints:
   Enabled: Yes

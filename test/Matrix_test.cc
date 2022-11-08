@@ -1,13 +1,30 @@
 #include <gtest/gtest.h>
 #include <linalg/Matrix.h>
 
+#include <complex>
+
 using Linalg::Matrix;
 using Linalg::Vector;
 
 TEST(Matrix, Basic) {
-  Linalg::Matrix<> m(4, 4);
-  EXPECT_EQ(m.shape()[0], 4);
-  EXPECT_EQ(m.shape()[1], 4);
+  Matrix<> md(4, 4);
+  EXPECT_EQ(md.shape()[0], 4);
+  EXPECT_EQ(md.shape()[1], 4);
+  Matrix<float> mf(4, 4);
+  EXPECT_EQ(mf.shape()[0], 4);
+  EXPECT_EQ(mf.shape()[1], 4);
+
+  Matrix<std::complex<double>> a({
+      {{1, 3}, {1, 3}},  //
+      {{2, 4}, {2, 4}}   //
+  });
+
+  Matrix<std::complex<double>> b({
+      {{1, 3}, {1, 3}},  //
+      {{2, 4}, {2, 4}}   //
+  });
+  std::cout << a * b << std::endl;
+  // auto a = Matrix<std::complex<double>>{4, 4};
 }
 
 TEST(Matrix, IndexAccess) {
@@ -27,7 +44,7 @@ TEST(Matrix, ChangePrecision) {
   // デフォルトの精度は 4桁
   EXPECT_EQ(m.get_precision(), 4);
   // メンバーを介して精度を変えられる。
-  m.set_precision(5);
+  Linalg::Matrix<double>::set_precision(5);
   // 精度を変えた後は double / float の精度が変わる
   EXPECT_EQ(m.get_precision(), 5);
   EXPECT_EQ(Linalg::Matrix<double>::get_precision(), 5);

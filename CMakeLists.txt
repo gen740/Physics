@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(physics CXX)
-file(GLOB _PHYSICS_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/**/*.cc)
+file(GLOB _PHYSICS_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/**/*.cc ${CMAKE_CURRENT_LIST_DIR}/src/**/**/*.cc)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 

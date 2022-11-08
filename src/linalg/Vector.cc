@@ -3,6 +3,7 @@
 #include <omp.h>
 
 #include <array>
+#include <complex>
 #include <exception>
 #include <iomanip>
 #include <iostream>
@@ -19,10 +20,10 @@ template <>
 int Vector<float>::m_precision = vector_precision;
 
 template <>
-int Vector<_Complex double>::m_precision = vector_precision;
+int Vector<std::complex<double>>::m_precision = vector_precision;
 
 template <>
-int Vector<_Complex float>::m_precision = vector_precision;
+int Vector<std::complex<float>>::m_precision = vector_precision;
 
 template <FloatingPointType T>
 Vector<T>::Vector(const Matrix<T> &mat)
@@ -80,13 +81,13 @@ std::ostream &operator<<(std::ostream &os, const Vector<T> &vec) {
 template std::ostream &operator<<(std::ostream &os, const Vector<double> &vec);
 template std::ostream &operator<<(std::ostream &os, const Vector<float> &vec);
 template std::ostream &operator<<(std::ostream &os,
-                                  const Vector<_Complex double> &vec);
+                                  const Vector<std::complex<double>> &vec);
 template std::ostream &operator<<(std::ostream &os,
-                                  const Vector<_Complex float> &vec);
+                                  const Vector<std::complex<float>> &vec);
 
 template class Vector<float>;
 template class Vector<double>;
-template class Vector<_Complex double>;
-template class Vector<_Complex float>;
+template class Vector<std::complex<double>>;
+template class Vector<std::complex<float>>;
 
 }  // namespace Linalg
