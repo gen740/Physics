@@ -28,6 +28,12 @@ int *const Matrix<double>::m_precision = &matrix_precision;
 template <>
 int *const Matrix<float>::m_precision = &matrix_precision;
 
+template <>
+int *const Matrix<_Complex double>::m_precision = &matrix_precision;
+
+template <>
+int *const Matrix<_Complex float>::m_precision = &matrix_precision;
+
 template <FloatingPointType T>
 Matrix<T>::Matrix(const Matrix<T> &mat, int col, int row)
     : m_COL(col), m_ROW(row) {
@@ -82,12 +88,32 @@ void Matrix<float>::set_precision(int precision) {
 }
 
 template <>
+void Matrix<_Complex double>::set_precision(int precision) {
+  *m_precision = precision;
+}
+
+template <>
+void Matrix<_Complex float>::set_precision(int precision) {
+  *m_precision = precision;
+}
+
+template <>
 int Matrix<double>::get_precision() {
   return *m_precision;
 }
 
 template <>
 int Matrix<float>::get_precision() {
+  return *m_precision;
+}
+
+template <>
+int Matrix<double _Complex>::get_precision() {
+  return *m_precision;
+}
+
+template <>
+int Matrix<float _Complex>::get_precision() {
   return *m_precision;
 }
 
@@ -172,6 +198,22 @@ LU_status Matrix<float>::lu() {
 }
 
 template <>
+LU_status Matrix<_Complex double>::lu() {
+  LU_status status(m_ROW);
+  status.status = LAPACKE_zgetrf(LAPACK_COL_MAJOR, m_COL, m_ROW, m_data.data(),
+                                 m_COL, status.ipiv.data());
+  return status;
+}
+
+template <>
+LU_status Matrix<_Complex float>::lu() {
+  LU_status status(m_ROW);
+  status.status = LAPACKE_cgetrf(LAPACK_COL_MAJOR, m_COL, m_ROW, m_data.data(),
+                                 m_COL, status.ipiv.data());
+  return status;
+}
+
+template <>
 int Matrix<double>::svd(Vector<double> &s, Matrix<double> &u,
                         Matrix<double> &v) {
   Vector<double> superb(std::min(m_ROW, m_COL));
@@ -189,6 +231,28 @@ int Matrix<float>::svd(Vector<float> &s, Matrix<float> &u, Matrix<float> &v) {
   v.reshape(m_ROW, m_ROW);
   s.reshape(std::min(m_COL, m_ROW));
   return LAPACKE_sgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
+                        s, u, m_COL, v, m_ROW, superb);
+}
+
+template <>
+int Matrix<_Complex double>::svd(Vector<double> &s, Matrix<_Complex double> &u,
+                                 Matrix<_Complex double> &v) {
+  Vector<double> superb(std::min(m_ROW, m_COL));
+  u.reshape(m_COL, m_COL);
+  v.reshape(m_ROW, m_ROW);
+  s.reshape(std::min(m_COL, m_ROW));
+  return LAPACKE_zgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
+                        s, u, m_COL, v, m_ROW, superb);
+}
+
+template <>
+int Matrix<_Complex float>::svd(Vector<float> &s, Matrix<_Complex float> &u,
+                                Matrix<_Complex float> &v) {
+  Vector<float> superb(std::min(m_ROW, m_COL));
+  u.reshape(m_COL, m_COL);
+  v.reshape(m_ROW, m_ROW);
+  s.reshape(std::min(m_COL, m_ROW));
+  return LAPACKE_cgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
                         s, u, m_COL, v, m_ROW, superb);
 }
 
@@ -211,6 +275,10 @@ T Matrix<T>::det() {
 
 template std::ostream &operator<<(std::ostream &os, const Matrix<double> &mat);
 template std::ostream &operator<<(std::ostream &os, const Matrix<float> &mat);
+template std::ostream &operator<<(std::ostream &os,
+                                  const Matrix<_Complex double> &mat);
+template std::ostream &operator<<(std::ostream &os,
+                                  const Matrix<_Complex float> &mat);
 
 template <FloatingPointType T>
 T &Matrix<T>::operator()(int col, int row) {
@@ -254,7 +322,42 @@ Matrix<float> Matrix<float>::operator*(Matrix<float> mat) {
   return ret;
 }
 
+template <>
+Matrix<_Complex double> Matrix<_Complex double>::operator*(
+    Matrix<_Complex double> mat) {
+  auto mat_shape = mat.shape();
+  if (m_ROW != mat_shape[0]) {
+    throw std::runtime_error("Cannot Multiply matrix");
+  }
+
+  Matrix<_Complex double> ret(m_COL, mat_shape[1]);
+  _Complex double alpha = 1;
+  _Complex double beta = 1;
+  cblas_zgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, &alpha,
+              *this, m_COL, mat, mat_shape[0], &beta, ret, m_COL);
+  return ret;
+}
+
+template <>
+Matrix<_Complex float> Matrix<_Complex float>::operator*(
+    Matrix<_Complex float> mat) {
+  auto mat_shape = mat.shape();
+  if (m_ROW != mat_shape[0]) {
+    throw std::runtime_error("Cannot Multiply matrix");
+  }
+  Matrix<_Complex float> ret(m_COL, mat_shape[1]);
+  _Complex float alpha = 1;
+  _Complex float beta = 1;
+  cblas_cgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, &alpha,
+              *this, m_COL, mat, mat_shape[0], &beta, ret, m_COL);
+  return ret;
+}
+
 template class Matrix<double>;
+template class Matrix<_Complex double>;
 template class Matrix<float>;
+template class Matrix<_Complex float>;
 
 }  // namespace Linalg

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <iosfwd>
+#include <type_traits>
 #include <vector>
 
 #include "linalg/Types.h"
@@ -13,7 +14,7 @@ template <FloatingPointType T>
 class Vector;
 
 struct LU_status {
-  int status;
+  int status{};
   std::vector<int> ipiv;
   operator int() const { return status; }
   LU_status(int size) : ipiv(size) {}
@@ -23,9 +24,14 @@ template <FloatingPointType T = double>
 class Matrix {
  public:
   // Constructors
+  using BaseType = std::conditional_t<
+      std::is_same_v<T, double>, double,
+      std::conditional_t<std::is_same_v<T, float>, float,
+                         std::conditional_t<std::is_same_v<T, _Complex double>,
+                                            double, float>>>;
   Matrix(int col, int row, T val = 0.)
       : m_data(col * row, val), m_COL(col), m_ROW(row) {}
-  Matrix() : m_data(0), m_COL(0), m_ROW(0) {}
+  Matrix() : m_data(0) {}
   Matrix(const Matrix &mat)
       : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
   Matrix(const Matrix<T> &mat, int col, int row);
@@ -44,17 +50,16 @@ class Matrix {
 
   static Matrix<T> Diag(Vector<T> vec, int col = -1, int row = -1);
 
- public:
   // {col, row}
-  std::array<int, 2> shape() const { return {m_COL, m_ROW}; }
-  int col_size() const { return m_COL; };
-  int row_size() const { return m_ROW; };
+  [[nodiscard]] std::array<int, 2> shape() const { return {m_COL, m_ROW}; }
+  [[nodiscard]] int col_size() const { return m_COL; };
+  [[nodiscard]] int row_size() const { return m_ROW; };
 
   // destructive LU
   LU_status lu();
 
   // destructive svd
-  int svd(Vector<T> &s, Matrix<T> &u, Matrix<T> &v);
+  int svd(Vector<BaseType> &s, Matrix<T> &u, Matrix<T> &v);
 
   // destructive det
   T det();
@@ -78,7 +83,7 @@ class Matrix {
 
   Matrix<T> operator*(Matrix<T> mat);
 
-  void save(const char *filename, const char delimeter = ',',
+  void save(const char *filename, char delimeter = ',',
             bool is_scientific = true);
 
   static void set_precision(int precision);
