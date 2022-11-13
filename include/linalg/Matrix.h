@@ -33,6 +33,9 @@ class Matrix {
   Matrix(int col, int row, T val = 0.)
       : m_data(col * row, val), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0) {}
+  Matrix(Matrix &&) noexcept = default;
+  Matrix &operator=(const Matrix &) = default;
+  Matrix &operator=(Matrix &&) noexcept = default;
   Matrix(const Matrix &mat)
       : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
   Matrix(const Matrix<T> &mat, int col, int row);
