@@ -35,60 +35,56 @@ T Matrix<T>::operator()(int col, int row) const {
 
 template <>
 Matrix<double> Matrix<double>::operator*(Matrix<double> mat) {
-  auto mat_shape = mat.shape();
-  if (m_ROW != mat_shape[0]) {
+  if (m_ROW != mat.m_COL) {
     throw std::runtime_error("Cannot Multiply matrix");
   }
-  Matrix<double> ret(m_COL, mat_shape[1]);
+  Matrix<double> ret(m_COL, mat.m_ROW);
   cblas_dgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, 1,
-              *this, m_COL, mat, mat_shape[0], 1, ret, m_COL);
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, 1, *this,
+              m_COL, mat, mat.m_COL, 1, ret, m_COL);
   return ret;
 }
 
 template <>
 Matrix<float> Matrix<float>::operator*(Matrix<float> mat) {
-  auto mat_shape = mat.shape();
-  if (m_ROW != mat_shape[0]) {
+  if (m_ROW != mat.m_COL) {
     throw std::runtime_error("Cannot Multiply matrix");
   }
-  Matrix<float> ret(m_COL, mat_shape[1]);
+  Matrix<float> ret(m_COL, mat.m_ROW);
   cblas_sgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, 1,
-              *this, m_COL, mat, mat_shape[0], 1, ret, m_COL);
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, 1, *this,
+              m_COL, mat, mat.m_COL, 1, ret, m_COL);
   return ret;
 }
 
 template <>
 Matrix<std::complex<double>> Matrix<std::complex<double>>::operator*(
     Matrix<std::complex<double>> mat) {
-  auto mat_shape = mat.shape();
-  if (m_ROW != mat_shape[0]) {
+  if (m_ROW != mat.m_COL) {
     throw std::runtime_error("Cannot Multiply matrix");
   }
 
-  Matrix<std::complex<double>> ret(m_COL, mat_shape[1]);
+  Matrix<std::complex<double>> ret(m_COL, mat.m_ROW);
   std::complex<double> alpha = 1;
   std::complex<double> beta = 1;
   cblas_zgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, &alpha,
-              *this, m_COL, mat, mat_shape[0], &beta, ret, m_COL);
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, &alpha,
+              *this, m_COL, mat, mat.m_COL, &beta, ret, m_COL);
   return ret;
 }
 
 template <>
 Matrix<std::complex<float>> Matrix<std::complex<float>>::operator*(
     Matrix<std::complex<float>> mat) {
-  auto mat_shape = mat.shape();
-  if (m_ROW != mat_shape[0]) {
+  if (m_ROW != mat.m_COL) {
     throw std::runtime_error("Cannot Multiply matrix");
   }
-  Matrix<std::complex<float>> ret(m_COL, mat_shape[1]);
+  Matrix<std::complex<float>> ret(m_COL, mat.m_ROW);
   std::complex<float> alpha = 1;
   std::complex<float> beta = 1;
   cblas_cgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat_shape[1], m_ROW, &alpha,
-              *this, m_COL, mat, mat_shape[0], &beta, ret, m_COL);
+              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, &alpha,
+              *this, m_COL, mat, mat.m_COL, &beta, ret, m_COL);
   return ret;
 }
 
@@ -162,7 +158,8 @@ Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec, int col, int row) {
   if (row == -1) {
     row = vec.size();
   }
-  if (vec.size() > col && vec.size() > row) {
+  if (vec.size() > static_cast<size_t>(col) &&
+      vec.size() > static_cast<size_t>(row)) {
     throw std::runtime_error(
         "Not Correct args, col and row should be larger than vector size");
   }
