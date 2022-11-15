@@ -105,14 +105,14 @@ Matrix<T>::Matrix(Matrix<T> &&mat, int col, int row) : m_COL(col), m_ROW(row) {
   m_data = std::move(mat.m_data);
 }
 
-template <FloatingPointType T>
-Matrix<T>::Matrix(const Vector<T> &vec, int col, int row)
-    : m_COL(col), m_ROW(row) {
-  if (vec.m_SIZE != col * row) {
-    throw std::runtime_error("配列の大きさが違います");
-  }
-  m_data = vec.m_data;
-}
+// template <FloatingPointType T>
+// Matrix<T>::Matrix(const Vector<T> &vec, int col, int row)
+//     : m_COL(col), m_ROW(row) {
+//   if (vec.m_SIZE != col * row) {
+//     throw std::runtime_error("配列の大きさが違います");
+//   }
+//   m_data = vec.m_data;
+// }
 
 template <FloatingPointType T>
 Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
@@ -131,25 +131,25 @@ Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
   }
 }
 
-template <FloatingPointType T>
-Matrix<T> Matrix<T>::Diag(Vector<T> vec, int col, int row) {
-  if (col == -1) {
-    col = vec.size();
-  }
-  if (row == -1) {
-    row = vec.size();
-  }
-  if (vec.size() > col && vec.size() > row) {
-    throw std::runtime_error(
-        "Not Correct args, col and row should be larger than vector size");
-  }
-  Matrix<T> ret(col, row);
-  for (int i = 0; i < vec.size(); ++i) {
-    ret[i][i] = vec[i];
-  }
-  return ret;
-}
-
+// template <FloatingPointType T>
+// Matrix<T> Matrix<T>::Diag(Vector<T> vec, int col, int row) {
+//   if (col == -1) {
+//     col = vec.size();
+//   }
+//   if (row == -1) {
+//     row = vec.size();
+//   }
+//   if (vec.size() > col && vec.size() > row) {
+//     throw std::runtime_error(
+//         "Not Correct args, col and row should be larger than vector size");
+//   }
+//   Matrix<T> ret(col, row);
+//   for (int i = 0; i < vec.size(); ++i) {
+//     ret[i][i] = vec[i];
+//   }
+//   return ret;
+// }
+//
 template <FloatingPointType T>
 Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec, int col, int row) {
   if (col == -1) {

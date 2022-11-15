@@ -4,7 +4,6 @@
 #include <complex>
 
 using Linalg::Matrix;
-using Linalg::Vector;
 
 template <typename T>
 class MatrixTest : public ::testing::Test {
@@ -70,9 +69,7 @@ TEST(Matrix, ChangePrecision) {
 
 TYPED_TEST(MatrixTest, Advance) {
   Linalg::Matrix<TypeParam> m(5, 5);
-  EXPECT_EQ(m.to_vec().size(), 25);
   m(3, 3) = 5;
-  EXPECT_FLOAT_EQ(m.to_vec()(13), 5);
   for (int i = 1; i <= 5; ++i) {
     m(i, i) = 1;
   }
@@ -82,18 +79,18 @@ TYPED_TEST(MatrixTest, Advance) {
   EXPECT_FLOAT_EQ(m.det(), 1);
 
   // Diag Matrix 作成の Test
-  Vector<double> S({3., 1., 4., 1., 5.});
+  Matrix<double> S({{3., 1., 4., 1., 5.}});
   // 引数に Vector を渡してやればそれを対角成分に持つ対角行列を作ることができる
-  auto diag_mat = Matrix<double>::Diag(Vector<double>(S));
-  for (int i = 0; i < diag_mat.col_size(); ++i) {
-    for (int j = 0; j < diag_mat.row_size(); ++j) {
-      if (i == j) {
-        EXPECT_FLOAT_EQ(diag_mat[i][j], S[i]);
-      } else {
-        EXPECT_FLOAT_EQ(diag_mat[i][j], 0);
-      }
-    }
-  }
+  // auto diag_mat = Matrix<double>::Diag(S);
+  // for (int i = 0; i < diag_mat.col_size(); ++i) {
+  //   for (int j = 0; j < diag_mat.row_size(); ++j) {
+  //     if (i == j) {
+  //       EXPECT_FLOAT_EQ(diag_mat[i][j], S[i]);
+  //     } else {
+  //       EXPECT_FLOAT_EQ(diag_mat[i][j], 0);
+  //     }
+  //   }
+  // }
 }
 
 TEST(Matrix, Operation) {
@@ -114,7 +111,7 @@ TEST(Matrix, SVD) {
       {9, 10, 11, 12}  //
   });
   std::cout << m << std::endl;
-  Vector<double> s;
+  Matrix<double> s;
   Matrix<double> u;
   Matrix<double> v;
   m.svd(s, u, v);
@@ -124,7 +121,7 @@ TEST(Matrix, SVD) {
 
   Matrix<double> s2(3, 4);
   for (int i = 0; i < 3; ++i) {
-    s2[i][i] = s[i];
+    s2[i][i] = s[i][0];
   }
 
   auto m3 = u * s2 * v;

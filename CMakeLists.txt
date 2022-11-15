@@ -66,7 +66,6 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     add_executable(
         physics_test
         test/Matrix_test.cc
-        test/Vector_test.cc
         test/lapacke_test.cc
         test/openmp_test.cc
         test/Fraction_test.cc

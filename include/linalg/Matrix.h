@@ -7,12 +7,8 @@
 #include <vector>
 
 #include "linalg/Types.h"
-#include "linalg/Vector.h"
 
 namespace Linalg {
-
-template <FloatingPointType T>
-class Vector;
 
 struct LU_status {
   int status{};
@@ -41,7 +37,6 @@ class Matrix {
       : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
   Matrix(const Matrix<T> &mat, int col, int row);
   Matrix(Matrix<T> &&mat, int col, int row);
-  Matrix(const Vector<T> &vec, int col, int row);
   Matrix(std::vector<std::vector<T>> vec);
   ~Matrix() = default;
 
@@ -54,7 +49,7 @@ class Matrix {
     m_data.resize(col * row, 0.);
   }
 
-  static Matrix<T> Diag(Vector<T> vec, int col = -1, int row = -1);
+  // static Matrix<T> Diag(std::vector<T> vec, int col = -1, int row = -1);
   static Matrix<T> Diag(std::initializer_list<T> vec, int col = -1,
                         int row = -1);
   static Matrix<T> Diag(T value, int size);
@@ -69,15 +64,15 @@ class Matrix {
   LU_status lu();
 
   // destructive svd
-  int svd(Vector<BaseType> &s, Matrix<T> &u, Matrix<T> &v);
+  int svd(Matrix<BaseType> &s, Matrix<T> &u, Matrix<T> &v);
 
   // destructive det
   T det();
 
-  friend Vector<T>;
+  // friend Vector<T>;
 
   // Vector に変換する
-  Vector<T> to_vec() { return Vector<T>(*this); }
+  // Vector<T> to_vec() { return Vector<T>(*this); }
 
   // 内部のvector表現を得る
   std::vector<T> data() { return m_data; }
@@ -92,6 +87,7 @@ class Matrix {
   operator T *() { return m_data.data(); }
 
   Matrix<T> operator*(Matrix<T> mat);
+  // Matrix<T> operator*(Vector<T> mat);
 
   void save(const char *filename, char delimeter = ',',
             bool is_scientific = true);
