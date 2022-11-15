@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <exception>
 #include <fstream>
+#include <initializer_list>
 #include <iomanip>
 #include <iostream>
 
@@ -149,6 +150,36 @@ Matrix<T> Matrix<T>::Diag(Vector<T> vec, int col, int row) {
   Matrix<T> ret(col, row);
   for (int i = 0; i < vec.size(); ++i) {
     ret[i][i] = vec[i];
+  }
+  return ret;
+}
+
+template <FloatingPointType T>
+Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec, int col, int row) {
+  if (col == -1) {
+    col = vec.size();
+  }
+  if (row == -1) {
+    row = vec.size();
+  }
+  if (vec.size() > col && vec.size() > row) {
+    throw std::runtime_error(
+        "Not Correct args, col and row should be larger than vector size");
+  }
+  Matrix<T> ret(col, row);
+  int counter{0};
+  for (auto &&i : vec) {
+    ret[counter][counter] = i;
+    counter++;
+  }
+  return ret;
+}
+
+template <FloatingPointType T>
+Matrix<T> Matrix<T>::Diag(T value, int size) {
+  Matrix<T> ret(size, size);
+  for (int i = 0; i < size; ++i) {
+    ret[i][i] = value;
   }
   return ret;
 }

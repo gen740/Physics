@@ -16,12 +16,12 @@ class Matrix;
 template <FloatingPointType T = double>
 class Vector {
  public:
-  Vector(int size) : m_data(size), m_SIZE(size) {}
+  explicit Vector(int size) : m_data(size), m_SIZE(size) {}
   Vector() : m_data(0), m_SIZE(0) {}
   Vector(const Vector<T> &vec) : m_data(vec.m_data), m_SIZE(vec.m_SIZE) {}
   Vector(const Matrix<T> &mat);
   Vector(Matrix<T> &&mat);
-  Vector(std::vector<T> vec) : m_data(vec), m_SIZE(vec.size()) {}
+  explicit Vector(std::vector<T> vec) : m_data(vec), m_SIZE(vec.size()) {}
 
   int size() { return m_SIZE; };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <initializer_list>
 #include <iosfwd>
 #include <type_traits>
 #include <vector>
@@ -30,7 +31,7 @@ class Matrix {
           std::is_same_v<T, float>, float,
           std::conditional_t<std::is_same_v<T, std::complex<double>>, double,
                              float>>>;
-  Matrix(int col, int row, T val = 0.)
+  explicit Matrix(int col, int row, T val = 0.)
       : m_data(col * row, val), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0) {}
   Matrix(Matrix &&) noexcept = default;
@@ -54,6 +55,10 @@ class Matrix {
   }
 
   static Matrix<T> Diag(Vector<T> vec, int col = -1, int row = -1);
+  static Matrix<T> Diag(std::initializer_list<T> vec, int col = -1,
+                        int row = -1);
+  static Matrix<T> Diag(T value, int size);
+  // static Matrix<T> Diag(T value, int col, int row);
 
   // {col, row}
   [[nodiscard]] std::array<int, 2> shape() const { return {m_COL, m_ROW}; }
