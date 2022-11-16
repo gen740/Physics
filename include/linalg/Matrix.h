@@ -2,17 +2,14 @@
 
 #include <array>
 #include <functional>
+#include <initializer_list>
 #include <iosfwd>
 #include <type_traits>
 #include <vector>
 
 #include "linalg/Types.h"
-#include "linalg/Vector.h"
 
 namespace Linalg {
-
-template <FloatingPointType T>
-class Vector;
 
 struct LU_status {
   int status{};
@@ -31,7 +28,7 @@ class Matrix {
           std::is_same_v<T, float>, float,
           std::conditional_t<std::is_same_v<T, std::complex<double>>, double,
                              float>>>;
-  Matrix(int col, int row, T val = 0.)
+  explicit Matrix(int col, int row, T val = 0.)
       : m_data(col * row, val), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0) {}
   Matrix(Matrix &&) noexcept = default;
@@ -41,7 +38,6 @@ class Matrix {
       : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
   Matrix(const Matrix<T> &mat, int col, int row);
   Matrix(Matrix<T> &&mat, int col, int row);
-  Matrix(const Vector<T> &vec, int col, int row);
   Matrix(std::vector<std::vector<T>> vec);
   ~Matrix() = default;
 
@@ -57,7 +53,11 @@ class Matrix {
   void map(std::function<T(T)> fun);
   void map(std::function<T(T, int, int)> fun);
 
-  static Matrix<T> Diag(Vector<T> vec, int col = -1, int row = -1);
+  // static Matrix<T> Diag(std::vector<T> vec, int col = -1, int row = -1);
+  static Matrix<T> Diag(std::initializer_list<T> vec, int col = -1,
+                        int row = -1);
+  static Matrix<T> Diag(T value, int size);
+  // static Matrix<T> Diag(T value, int col, int row);
 
   // {col, row}
   [[nodiscard]] std::array<int, 2> shape() const { return {m_COL, m_ROW}; }
@@ -68,15 +68,15 @@ class Matrix {
   LU_status lu();
 
   // destructive svd
-  int svd(Vector<BaseType> &s, Matrix<T> &u, Matrix<T> &v);
+  int svd(Matrix<BaseType> &s, Matrix<T> &u, Matrix<T> &v);
 
   // destructive det
   T det();
 
-  friend Vector<T>;
+  // friend Vector<T>;
 
   // Vector に変換する
-  Vector<T> to_vec() { return Vector<T>(*this); }
+  // Vector<T> to_vec() { return Vector<T>(*this); }
 
   // 内部のvector表現を得る
   std::vector<T> data() { return m_data; }
@@ -92,6 +92,7 @@ class Matrix {
   operator T *() { return m_data.data(); }
 
   Matrix<T> operator*(Matrix<T> mat);
+  // Matrix<T> operator*(Vector<T> mat);
 
   void save(const char *filename, char delimeter = ',',
             bool is_scientific = true);

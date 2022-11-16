@@ -1,14 +1,15 @@
 version: '3'
 
+env:
+  CXX: /usr/local/opt/llvm/bin/clang++
+  CC: /usr/local/opt/llvm/bin/clang
+  OpenBLAS_DIR: /usr/local/opt/openblas
+
 tasks:
   compile:
     cmds:
       - cmake -B build -GNinja
       - cmake --build build
-    env:
-      CXX: /usr/local/opt/llvm/bin/clang++
-      CC: /usr/local/opt/llvm/bin/clang
-      OpenBLAS_DIR: /usr/local/opt/openblas
     silent: true
   execute:
     cmds:
