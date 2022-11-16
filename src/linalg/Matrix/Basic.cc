@@ -135,6 +135,26 @@ Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
 }
 
 template <FloatingPointType T>
+void Matrix<T>::map(std::function<T(T)> fun) {
+#pragma omp parallel for
+  for (int i = 0; i < m_COL; i++) {
+    for (int j = 0; j < m_ROW; j++) {
+      (*this)[i][j] = fun((*this)[i][j]);
+    }
+  }
+}
+
+template <FloatingPointType T>
+void Matrix<T>::map(std::function<T(T, int, int)> fun) {
+#pragma omp parallel for
+  for (int i = 0; i < m_COL; i++) {
+    for (int j = 0; j < m_ROW; j++) {
+      (*this)[i][j] = fun((*this)[i][j], i + 1, j + 1);
+    }
+  }
+}
+
+template <FloatingPointType T>
 Matrix<T> Matrix<T>::Diag(Vector<T> vec, int col, int row) {
   if (col == -1) {
     col = vec.size();

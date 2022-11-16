@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <iosfwd>
 #include <type_traits>
 #include <vector>
@@ -53,6 +54,9 @@ class Matrix {
     m_data.resize(col * row, 0.);
   }
 
+  void map(std::function<T(T)> fun);
+  void map(std::function<T(T, int, int)> fun);
+
   static Matrix<T> Diag(Vector<T> vec, int col = -1, int row = -1);
 
   // {col, row}
@@ -83,6 +87,7 @@ class Matrix {
   T &operator()(int col, int row);
   T operator()(int col, int row) const;
   T *operator[](int i) { return &m_data.data()[i * m_COL]; }
+  // T *operator[](int i) const { return &m_data.data()[i * m_COL]; }
 
   operator T *() { return m_data.data(); }
 

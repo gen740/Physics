@@ -46,6 +46,22 @@ TYPED_TEST(MatrixTest, IndexAccess) {
   EXPECT_FLOAT_EQ(mc(2, 2).real(), 4);
 }
 
+TYPED_TEST(MatrixTest, MapTest) {
+  Matrix<TypeParam> m(3, 3);
+  m.map([](auto a, int c, int r) {
+    std::cout << c << "  " << r << std::endl;
+    return c * 3 + r;
+  });
+  EXPECT_FLOAT_EQ(m(1, 1), 4);
+  EXPECT_FLOAT_EQ(m(1, 2), 7);
+  EXPECT_FLOAT_EQ(m(2, 1), 5);
+  // Matrix<std::complex<TypeParam>> mc(3, 3); // TODO
+  // mc.map([](int c, int r) { return std::complex<double>(c * 3 + r); });
+  // EXPECT_FLOAT_EQ(mc(1, 1), 4);
+  // EXPECT_FLOAT_EQ(mc(1, 2), 5);
+  // EXPECT_FLOAT_EQ(mc(2, 1), 7);
+}
+
 // cout/save でどれだけの精度で出力するかが設定できる。
 TEST(Matrix, ChangePrecision) {
   auto check_prec = [](int n) {

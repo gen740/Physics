@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  build:
+  compile:
     cmds:
       - cmake -B build -GNinja
       - cmake --build build
@@ -10,7 +10,7 @@ tasks:
       CC: /usr/local/opt/llvm/bin/clang
       OpenBLAS_DIR: /usr/local/opt/openblas
     silent: true
-  run:
+  execute:
     cmds:
       - ./build/physics_test
     silent: true
