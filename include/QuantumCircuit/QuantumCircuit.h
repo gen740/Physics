@@ -14,6 +14,7 @@ using Linalg::ZMatrix;
  *  Detailed description
  */
 enum Quantum_gate {
+  X,
   CX,
   CCX,
 };
@@ -29,6 +30,26 @@ class QCircuit {
 
   ZMatrix inner_repr;
   std::vector<std::pair<Quantum_gate, std::vector<uint32_t>>> gates;
+
+  void _x(std::vector<uint32_t> t) {
+    if (t.size() != 1) {
+      throw std::runtime_error("CX should take target args");
+    }
+    ZMatrix cx_mat(UNIT_NUM, UNIT_NUM);
+    for (uint32_t i = 0; i < UNIT_NUM; i++) {
+      for (uint32_t j = 0; j < UNIT_NUM; j++) {
+        auto k = j;
+        if ((j & (1 << t.at(0))) != 0u) {
+          k = j - (1 << t.at(0));
+        } else {
+          k = j + (1 << t.at(0));
+        }
+        cx_mat(static_cast<int>(i + 1), static_cast<int>(j + 1)) =
+            static_cast<std::complex<double>>(static_cast<double>(i == k));
+      }
+    }
+    inner_repr = cx_mat * inner_repr;
+  }
 
   void _cx(std::vector<uint32_t> ct) {
     if (ct.size() != 2) {
@@ -100,6 +121,10 @@ class QCircuit {
 
   auto get_inner_repr() { return inner_repr; }
 
+  void x(uint32_t target) {
+    gates.emplace_back(Quantum_gate::X, std::vector<uint32_t>{target});
+  }
+
   void cx(uint32_t control, uint32_t target) {
     gates.emplace_back(Quantum_gate::CX,
                        std::vector<uint32_t>{control, target});
@@ -118,6 +143,9 @@ class QCircuit {
     for (auto&& i : gates) {
       std::cout << "#" << std::flush;
       switch (i.first) {
+        case Quantum_gate::X:
+          _x(i.second);
+          break;
         case Quantum_gate::CX:
           _cx(i.second);
           break;

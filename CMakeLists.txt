@@ -70,6 +70,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
         test/openmp_test.cc
         test/Fraction_test.cc
         test/Quantity_test.cc
+        test/QuantumCircuit_test.cc
         test/generator_test.cc
         )
     target_link_libraries(
