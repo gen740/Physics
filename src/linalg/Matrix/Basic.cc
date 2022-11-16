@@ -170,6 +170,7 @@ void Matrix<T>::map(std::function<T(T, int, int)> fun) {
   }
 }
 
+template <FloatingPointType T>
 Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec, int col, int row) {
   if (col == -1) {
     col = vec.size();
