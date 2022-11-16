@@ -73,11 +73,6 @@ class Matrix {
   // destructive det
   T det();
 
-  // friend Vector<T>;
-
-  // Vector に変換する
-  // Vector<T> to_vec() { return Vector<T>(*this); }
-
   // 内部のvector表現を得る
   std::vector<T> data() { return m_data; }
 
@@ -106,5 +101,10 @@ class Matrix {
   std::vector<T> m_data;
   int m_COL{0}, m_ROW{0};
 };
+
+using DMatrix = Matrix<double>;
+using FMatrix = Matrix<float>;
+using ZMatrix = Matrix<std::complex<double>>;
+using CMatrix = Matrix<std::complex<float>>;
 
 }  // namespace Linalg
