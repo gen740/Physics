@@ -16,8 +16,21 @@ int Matrix<double>::svd(Matrix<double> &s, Matrix<double> &u,
   u.reshape(m_COL, m_COL);
   v.reshape(m_ROW, m_ROW);
   s.reshape(std::min(m_COL, m_ROW), 1);
-  return LAPACKE_dgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
-                        s, u, m_COL, v, m_ROW, superb);
+  return LAPACKE_dgesvd(        //
+      LAPACK_COL_MAJOR,         //
+      'A',                      //
+      'A',                      //
+      static_cast<int>(m_COL),  //
+      static_cast<int>(m_ROW),  //
+      *this,                    //
+      static_cast<int>(m_COL),  //
+      s,                        //
+      u,                        //
+      static_cast<int>(m_COL),  //
+      v,                        //
+      static_cast<int>(m_ROW),  //
+      superb                    //
+  );
 }
 
 template <>
@@ -26,8 +39,21 @@ int Matrix<float>::svd(Matrix<float> &s, Matrix<float> &u, Matrix<float> &v) {
   u.reshape(m_COL, m_COL);
   v.reshape(m_ROW, m_ROW);
   s.reshape(std::min(m_COL, m_ROW), 1);
-  return LAPACKE_sgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW, *this, m_COL,
-                        s, u, m_COL, v, m_ROW, superb);
+  return LAPACKE_sgesvd(        //
+      LAPACK_COL_MAJOR,         //
+      'A',                      //
+      'A',                      //
+      static_cast<int>(m_COL),  //
+      static_cast<int>(m_ROW),  //
+      *this,                    //
+      static_cast<int>(m_COL),  //
+      s,                        //
+      u,                        //
+      static_cast<int>(m_COL),  //
+      v,                        //
+      static_cast<int>(m_ROW),  //
+      superb                    //
+  );
 }
 
 template <>
@@ -38,10 +64,21 @@ int Matrix<std::complex<double>>::svd(Matrix<double> &s,
   u.reshape(m_COL, m_COL);
   v.reshape(m_ROW, m_ROW);
   s.reshape(std::min(m_COL, m_ROW), 1);
-  return LAPACKE_zgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW,
-                        reinterpret_cast<_Complex double *>(&*this), m_COL, s,
-                        reinterpret_cast<_Complex double *>(&u), m_COL,
-                        reinterpret_cast<_Complex double *>(&v), m_ROW, superb);
+  return LAPACKE_zgesvd(                            //
+      LAPACK_COL_MAJOR,                             //
+      'A',                                          //
+      'A',                                          //
+      static_cast<int>(m_COL),                      //
+      static_cast<int>(m_ROW),                      //
+      reinterpret_cast<_Complex double *>(&*this),  //
+      static_cast<int>(m_COL),                      //
+      s,                                            //
+      reinterpret_cast<_Complex double *>(&u),      //
+      static_cast<int>(m_COL),                      //
+      reinterpret_cast<_Complex double *>(&v),      //
+      static_cast<int>(m_ROW),                      //
+      superb                                        //
+  );
 }
 
 template <>
@@ -52,10 +89,21 @@ int Matrix<std::complex<float>>::svd(Matrix<float> &s,
   u.reshape(m_COL, m_COL);
   v.reshape(m_ROW, m_ROW);
   s.reshape(std::min(m_COL, m_ROW), 1);
-  return LAPACKE_cgesvd(LAPACK_COL_MAJOR, 'A', 'A', m_COL, m_ROW,
-                        reinterpret_cast<_Complex float *>(&*this), m_COL, s,
-                        reinterpret_cast<_Complex float *>(&u), m_COL,
-                        reinterpret_cast<_Complex float *>(&v), m_ROW, superb);
+  return LAPACKE_cgesvd(                           //
+      LAPACK_COL_MAJOR,                            //
+      'A',                                         //
+      'A',                                         //
+      static_cast<int>(m_COL),                     //
+      static_cast<int>(m_ROW),                     //
+      reinterpret_cast<_Complex float *>(&*this),  //
+      static_cast<int>(m_COL),                     //
+      s,                                           //
+      reinterpret_cast<_Complex float *>(&u),      //
+      static_cast<int>(m_COL),                     //
+      reinterpret_cast<_Complex float *>(&v),      //
+      static_cast<int>(m_ROW),                     //
+      superb                                       //
+  );
 }
 
 }  // namespace Linalg

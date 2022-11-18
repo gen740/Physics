@@ -74,9 +74,9 @@ template <FloatingPointType T>
 std::ostream &operator<<(std::ostream &os, const Matrix<T> &mat) {
   os << "Matrix " << mat.m_COL << "×" << mat.m_ROW << "\n";
   os << std::setprecision(*(mat.m_precision)) << std::scientific;
-  for (int i = 1; i <= mat.m_COL; ++i) {
+  for (size_t i = 1; i <= mat.m_COL; ++i) {
     os << "\t";
-    for (int j = 1; j <= mat.m_ROW; ++j) {
+    for (size_t j = 1; j <= mat.m_ROW; ++j) {
       if (j == mat.m_ROW) {
         if (i == mat.m_COL) {
           // if constexpr (is_complex<T>::value) {

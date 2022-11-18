@@ -4,6 +4,7 @@
 #include <functional>
 #include <initializer_list>
 #include <iosfwd>
+#include <optional>
 #include <type_traits>
 #include <vector>
 
@@ -28,7 +29,7 @@ class Matrix {
           std::is_same_v<T, float>, float,
           std::conditional_t<std::is_same_v<T, std::complex<double>>, double,
                              float>>>;
-  explicit Matrix(int col, int row, T val = 0.)
+  explicit Matrix(size_t col, size_t row, T val = 0.)
       : m_data(col * row, val), m_COL(col), m_ROW(row) {}
   Matrix() : m_data(0) {}
   Matrix(Matrix &&) noexcept = default;
@@ -36,12 +37,12 @@ class Matrix {
   Matrix &operator=(Matrix &&) noexcept = default;
   Matrix(const Matrix &mat)
       : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
-  Matrix(const Matrix<T> &mat, int col, int row);
-  Matrix(Matrix<T> &&mat, int col, int row);
+  Matrix(const Matrix<T> &mat, size_t col, size_t row);
+  Matrix(Matrix<T> &&mat, size_t col, size_t row);
   Matrix(std::vector<std::vector<T>> vec);
   ~Matrix() = default;
 
-  void reshape(int col, int row) {
+  void reshape(size_t col, size_t row) {
     if (col == m_COL && row == m_ROW) {
       return;
     }
@@ -51,18 +52,20 @@ class Matrix {
   }
 
   void map(std::function<T(T)> fun);
-  void map(std::function<T(T, int, int)> fun);
+  void map(std::function<T(T, size_t, size_t)> fun);
 
-  // static Matrix<T> Diag(std::vector<T> vec, int col = -1, int row = -1);
-  static Matrix<T> Diag(std::initializer_list<T> vec, int col = -1,
-                        int row = -1);
-  static Matrix<T> Diag(T value, int size);
-  // static Matrix<T> Diag(T value, int col, int row);
+  // static Matrix<T> Diag(std::vector<T> vec, size_t col = -1, size_t row =
+  // -1);
+  static Matrix<T> Diag(std::initializer_list<T> vec,
+                        std::optional<size_t> col = std::nullopt,
+                        std::optional<size_t> row = std::nullopt);
+  static Matrix<T> Diag(T value, size_t size);
+  // static Matrix<T> Diag(T value, size_t col, size_t row);
 
   // {col, row}
-  [[nodiscard]] std::array<int, 2> shape() const { return {m_COL, m_ROW}; }
-  [[nodiscard]] int col_size() const { return m_COL; };
-  [[nodiscard]] int row_size() const { return m_ROW; };
+  [[nodiscard]] std::array<size_t, 2> shape() const { return {m_COL, m_ROW}; }
+  [[nodiscard]] size_t col_size() const { return m_COL; };
+  [[nodiscard]] size_t row_size() const { return m_ROW; };
 
   // destructive LU
   LU_status lu();
@@ -79,10 +82,10 @@ class Matrix {
   template <FloatingPointType U>
   friend std::ostream &operator<<(std::ostream &os, const Matrix<U> &mat);
 
-  T &operator()(int col, int row);
-  T operator()(int col, int row) const;
-  T *operator[](int i) { return &m_data.data()[i * m_COL]; }
-  // T *operator[](int i) const { return &m_data.data()[i * m_COL]; }
+  T &operator()(size_t col, size_t row);
+  T operator()(size_t col, size_t row) const;
+  T *operator[](size_t i) { return &m_data.data()[i * m_COL]; }
+  // T *operator[](size_t i) const { return &m_data.data()[i * m_COL]; }
 
   operator T *() { return m_data.data(); }
 
@@ -99,7 +102,7 @@ class Matrix {
   static int *const m_precision;
 
   std::vector<T> m_data;
-  int m_COL{0}, m_ROW{0};
+  size_t m_COL{0}, m_ROW{0};
 };
 
 using DMatrix = Matrix<double>;

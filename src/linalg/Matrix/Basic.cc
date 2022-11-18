@@ -1,3 +1,5 @@
+#include <optional>
+
 #include "linalg/Matrix.h"
 
 #ifdef PHYSICS_USE_MKL
@@ -18,7 +20,7 @@
 namespace Linalg {
 
 template <FloatingPointType T>
-T &Matrix<T>::operator()(int col, int row) {
+T &Matrix<T>::operator()(size_t col, size_t row) {
   if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) {
     return m_data[(row - 1) * m_COL + (col - 1)];
   }
@@ -26,7 +28,7 @@ T &Matrix<T>::operator()(int col, int row) {
 }
 
 template <FloatingPointType T>
-T Matrix<T>::operator()(int col, int row) const {
+T Matrix<T>::operator()(size_t col, size_t row) const {
   if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) {
     return m_data[(row - 1) * m_COL + (col - 1)];
   }
@@ -39,9 +41,22 @@ Matrix<double> Matrix<double>::operator*(Matrix<double> mat) {
     throw std::runtime_error("Cannot Multiply matrix");
   }
   Matrix<double> ret(m_COL, mat.m_ROW);
-  cblas_dgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, 1, *this,
-              m_COL, mat, mat.m_COL, 1, ret, m_COL);
+  cblas_dgemm(                        //
+      CBLAS_ORDER::CblasColMajor,     //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      static_cast<int>(m_COL),        //
+      static_cast<int>(mat.m_ROW),    //
+      static_cast<int>(m_ROW),        //
+      1,                              //
+      *this,                          //
+      static_cast<int>(m_COL),        //
+      mat,                            //
+      static_cast<int>(mat.m_COL),    //
+      1,                              //
+      ret,                            //
+      static_cast<int>(m_COL)         //
+  );
   return ret;
 }
 
@@ -51,9 +66,23 @@ Matrix<float> Matrix<float>::operator*(Matrix<float> mat) {
     throw std::runtime_error("Cannot Multiply matrix");
   }
   Matrix<float> ret(m_COL, mat.m_ROW);
-  cblas_sgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, 1, *this,
-              m_COL, mat, mat.m_COL, 1, ret, m_COL);
+
+  cblas_sgemm(                        //
+      CBLAS_ORDER::CblasColMajor,     //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      static_cast<int>(m_COL),        //
+      static_cast<int>(mat.m_ROW),    //
+      static_cast<int>(m_ROW),        //
+      1,                              //
+      *this,                          //
+      static_cast<int>(m_COL),        //
+      mat,                            //
+      static_cast<int>(mat.m_COL),    //
+      1,                              //
+      ret,                            //
+      static_cast<int>(m_COL)         //
+  );
   return ret;
 }
 
@@ -67,9 +96,22 @@ Matrix<std::complex<double>> Matrix<std::complex<double>>::operator*(
   Matrix<std::complex<double>> ret(m_COL, mat.m_ROW);
   std::complex<double> alpha = 1;
   std::complex<double> beta = 1;
-  cblas_zgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, &alpha,
-              *this, m_COL, mat, mat.m_COL, &beta, ret, m_COL);
+  cblas_zgemm(                        //
+      CBLAS_ORDER::CblasColMajor,     //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      static_cast<int>(m_COL),        //
+      static_cast<int>(mat.m_ROW),    //
+      static_cast<int>(m_ROW),        //
+      &alpha,                         //
+      *this,                          //
+      static_cast<int>(m_COL),        //
+      mat,                            //
+      static_cast<int>(mat.m_COL),    //
+      &beta,                          //
+      ret,                            //
+      static_cast<int>(m_COL)         //
+  );
   return ret;
 }
 
@@ -82,14 +124,27 @@ Matrix<std::complex<float>> Matrix<std::complex<float>>::operator*(
   Matrix<std::complex<float>> ret(m_COL, mat.m_ROW);
   std::complex<float> alpha = 1;
   std::complex<float> beta = 1;
-  cblas_cgemm(CBLAS_ORDER::CblasColMajor, CBLAS_TRANSPOSE::CblasNoTrans,
-              CBLAS_TRANSPOSE::CblasNoTrans, m_COL, mat.m_ROW, m_ROW, &alpha,
-              *this, m_COL, mat, mat.m_COL, &beta, ret, m_COL);
+  cblas_cgemm(                        //
+      CBLAS_ORDER::CblasColMajor,     //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      CBLAS_TRANSPOSE::CblasNoTrans,  //
+      static_cast<int>(m_COL),        //
+      static_cast<int>(mat.m_ROW),    //
+      static_cast<int>(m_ROW),        //
+      &alpha,                         //
+      *this,                          //
+      static_cast<int>(m_COL),        //
+      mat,                            //
+      static_cast<int>(mat.m_COL),    //
+      &beta,                          //
+      ret,                            //
+      static_cast<int>(m_COL)         //
+  );
   return ret;
 }
 
 template <FloatingPointType T>
-Matrix<T>::Matrix(const Matrix<T> &mat, int col, int row)
+Matrix<T>::Matrix(const Matrix<T> &mat, size_t col, size_t row)
     : m_COL(col), m_ROW(row) {
   if (mat.m_ROW * mat.m_COL != col * row) {
     throw std::runtime_error("配列の大きさが違います");
@@ -98,7 +153,8 @@ Matrix<T>::Matrix(const Matrix<T> &mat, int col, int row)
 }
 
 template <FloatingPointType T>
-Matrix<T>::Matrix(Matrix<T> &&mat, int col, int row) : m_COL(col), m_ROW(row) {
+Matrix<T>::Matrix(Matrix<T> &&mat, size_t col, size_t row)
+    : m_COL(col), m_ROW(row) {
   if (mat.m_ROW * mat.m_COL != col * row) {
     throw std::runtime_error("配列の大きさが違います");
   }
@@ -117,15 +173,15 @@ Matrix<T>::Matrix(Matrix<T> &&mat, int col, int row) : m_COL(col), m_ROW(row) {
 template <FloatingPointType T>
 Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
     : m_COL(vec.size()), m_ROW(vec[0].size()) {
-  for (int i = 1; i < m_COL; ++i) {
-    if (m_ROW != static_cast<int>(vec[i].size())) {
+  for (size_t i = 1; i < m_COL; ++i) {
+    if (m_ROW != static_cast<size_t>(vec[i].size())) {
       throw std::runtime_error("Matrix Constructor recieve none matrix vector");
     }
   }
   // m_data.reserve(m_COL * m_ROW, 0.);
   m_data.resize(m_COL * m_ROW);
-  for (int i = 0; i < m_ROW; ++i) {
-    for (int j = 0; j < m_COL; ++j) {
+  for (size_t i = 0; i < m_ROW; ++i) {
+    for (size_t j = 0; j < m_COL; ++j) {
       m_data[i * m_COL + j] = vec[j][i];
     }
   }
@@ -153,37 +209,38 @@ Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
 template <FloatingPointType T>
 void Matrix<T>::map(std::function<T(T)> fun) {
 #pragma omp parallel for
-  for (int i = 0; i < m_COL; i++) {
-    for (int j = 0; j < m_ROW; j++) {
+  for (size_t i = 0; i < m_COL; i++) {
+    for (size_t j = 0; j < m_ROW; j++) {
       (*this)[i][j] = fun((*this)[i][j]);
     }
   }
 }
 
 template <FloatingPointType T>
-void Matrix<T>::map(std::function<T(T, int, int)> fun) {
+void Matrix<T>::map(std::function<T(T, size_t, size_t)> fun) {
 #pragma omp parallel for
-  for (int i = 0; i < m_COL; i++) {
-    for (int j = 0; j < m_ROW; j++) {
+  for (size_t i = 0; i < m_COL; i++) {
+    for (size_t j = 0; j < m_ROW; j++) {
       (*this)[i][j] = fun((*this)[i][j], i + 1, j + 1);
     }
   }
 }
 
 template <FloatingPointType T>
-Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec, int col, int row) {
-  if (col == -1) {
+Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec,
+                          std::optional<size_t> col,
+                          std::optional<size_t> row) {
+  if (!col.has_value()) {
     col = vec.size();
   }
-  if (row == -1) {
+  if (!row.has_value()) {
     row = vec.size();
   }
-  if (vec.size() > static_cast<size_t>(col) &&
-      vec.size() > static_cast<size_t>(row)) {
+  if (vec.size() > col && vec.size() > row) {
     throw std::runtime_error(
         "Not Correct args, col and row should be larger than vector size");
   }
-  Matrix<T> ret(col, row);
+  Matrix<T> ret(col.value(), row.value());
   int counter{0};
   for (auto &&i : vec) {
     ret[counter][counter] = i;
@@ -193,9 +250,9 @@ Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec, int col, int row) {
 }
 
 template <FloatingPointType T>
-Matrix<T> Matrix<T>::Diag(T value, int size) {
+Matrix<T> Matrix<T>::Diag(T value, size_t size) {
   Matrix<T> ret(size, size);
-  for (int i = 0; i < size; ++i) {
+  for (size_t i = 0; i < size; ++i) {
     ret[i][i] = value;
   }
   return ret;
@@ -208,8 +265,8 @@ void Matrix<>::save(const char *filename, const char delimeter,
   if (is_scientific) {
     file << std::scientific;
   }
-  for (int i = 1; i <= m_COL; ++i) {
-    for (int j = 1; j <= m_ROW; ++j) {
+  for (size_t i = 1; i <= m_COL; ++i) {
+    for (size_t j = 1; j <= m_ROW; ++j) {
       if (j == m_ROW) {
         if (i == m_COL) {
           file << (*this)(i, j);
@@ -232,9 +289,9 @@ T Matrix<T>::det() {
     throw std::runtime_error("Matrix is not squre");
   }
   auto status = m.lu();
-  for (int i = 0; i < m.m_COL; ++i) {
+  for (size_t i = 0; i < m.m_COL; ++i) {
     det *= m[i][i];
-    if (status.ipiv.at(i) != i + 1) {
+    if (status.ipiv.at(i) != static_cast<int>(i + 1)) {
       det *= -1;
     }
   }
