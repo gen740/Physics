@@ -144,6 +144,17 @@ Matrix<std::complex<float>> Matrix<std::complex<float>>::operator*(
 }
 
 template <FloatingPointType T>
+Matrix<T>::Matrix(size_t col, size_t row, T val)
+    : m_data(col * row, val), m_COL(col), m_ROW(row) {}
+
+template <FloatingPointType T>
+Matrix<T>::Matrix() : m_data(0) {}
+
+template <FloatingPointType T>
+Matrix<T>::Matrix(const Matrix &mat)
+    : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
+
+template <FloatingPointType T>
 Matrix<T>::Matrix(const Matrix<T> &mat, size_t col, size_t row)
     : m_COL(col), m_ROW(row) {
   if (mat.m_ROW * mat.m_COL != col * row) {
@@ -205,7 +216,17 @@ Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
 //   }
 //   return ret;
 // }
-//
+
+template <FloatingPointType T>
+void Matrix<T>::reshape(size_t col, size_t row) {
+  if (col == m_COL && row == m_ROW) {
+    return;
+  }
+  m_COL = col;
+  m_ROW = row;
+  m_data.resize(col * row, 0.);
+}
+
 template <FloatingPointType T>
 void Matrix<T>::map(std::function<T(T)> fun) {
 #pragma omp parallel for

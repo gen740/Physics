@@ -15,7 +15,7 @@ ZMatrix vec_to_zmatrix(std::vector<double> vec) {
 }
 
 TEST(QuantumCircuit, X) {
-  QCircuit<2> q;
+  QCircuit q{2};
   q.x(0);
 
   q.compile();
@@ -34,7 +34,7 @@ TEST(QuantumCircuit, X) {
 }
 
 TEST(QuantumCircuit, CX) {
-  QCircuit<2> q;
+  QCircuit q{2};
   q.cx(1, 0);
   q.compile();
 
@@ -52,7 +52,7 @@ TEST(QuantumCircuit, CX) {
 }
 
 TEST(QuantumCircuit, CCX) {
-  QCircuit<3> q;
+  QCircuit q{3};
   q.ccx(2, 1, 0);
   q.compile();
 

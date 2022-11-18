@@ -4,6 +4,7 @@
 #include <functional>
 #include <initializer_list>
 #include <iosfwd>
+#include <memory>
 #include <optional>
 #include <type_traits>
 #include <vector>
@@ -29,27 +30,19 @@ class Matrix {
           std::is_same_v<T, float>, float,
           std::conditional_t<std::is_same_v<T, std::complex<double>>, double,
                              float>>>;
-  explicit Matrix(size_t col, size_t row, T val = 0.)
-      : m_data(col * row, val), m_COL(col), m_ROW(row) {}
-  Matrix() : m_data(0) {}
+  explicit Matrix(size_t col, size_t row, T val = 0.0);
+  Matrix();
   Matrix(Matrix &&) noexcept = default;
   Matrix &operator=(const Matrix &) = default;
   Matrix &operator=(Matrix &&) noexcept = default;
-  Matrix(const Matrix &mat)
-      : m_data(mat.m_data), m_COL(mat.m_COL), m_ROW(mat.m_ROW) {}
+  Matrix(const Matrix &mat);
   Matrix(const Matrix<T> &mat, size_t col, size_t row);
   Matrix(Matrix<T> &&mat, size_t col, size_t row);
   Matrix(std::vector<std::vector<T>> vec);
+
   ~Matrix() = default;
 
-  void reshape(size_t col, size_t row) {
-    if (col == m_COL && row == m_ROW) {
-      return;
-    }
-    m_COL = col;
-    m_ROW = row;
-    m_data.resize(col * row, 0.);
-  }
+  void reshape(size_t col, size_t row);
 
   void map(std::function<T(T)> fun);
   void map(std::function<T(T, size_t, size_t)> fun);
@@ -99,7 +92,7 @@ class Matrix {
   static int get_precision();
 
  private:
-  static int *const m_precision;
+  static const std::shared_ptr<int> m_precision;
 
   std::vector<T> m_data;
   size_t m_COL{0}, m_ROW{0};

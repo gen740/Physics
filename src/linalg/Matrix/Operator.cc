@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "linalg/Matrix.h"
 
 #ifdef PHYSICS_USE_MKL
@@ -14,21 +16,23 @@ namespace Linalg {
 
 namespace {
 
-int matrix_precision = 4;
+auto matrix_precision = std::make_shared<int>(4);
 
 }  // namespace
 
 template <>
-int *const Matrix<double>::m_precision = &matrix_precision;
+const std::shared_ptr<int> Matrix<double>::m_precision = matrix_precision;
 
 template <>
-int *const Matrix<float>::m_precision = &matrix_precision;
+const std::shared_ptr<int> Matrix<float>::m_precision = matrix_precision;
 
 template <>
-int *const Matrix<std::complex<double>>::m_precision = &matrix_precision;
+const std::shared_ptr<int> Matrix<std::complex<double>>::m_precision =
+    matrix_precision;
 
 template <>
-int *const Matrix<std::complex<float>>::m_precision = &matrix_precision;
+const std::shared_ptr<int> Matrix<std::complex<float>>::m_precision =
+    matrix_precision;
 
 template <>
 void Matrix<double>::set_precision(int precision) {
@@ -79,11 +83,7 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T> &mat) {
     for (size_t j = 1; j <= mat.m_ROW; ++j) {
       if (j == mat.m_ROW) {
         if (i == mat.m_COL) {
-          // if constexpr (is_complex<T>::value) {
-          //   os << mat(i, j).real() << " + " << mat(i, j).imag() << "j";
-          // } else {
           os << mat(i, j);
-          // }
           break;
         }
         os << mat(i, j) << "\n";
@@ -98,9 +98,7 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T> &mat) {
 
 template std::ostream &operator<<(std::ostream &os, const Matrix<double> &mat);
 template std::ostream &operator<<(std::ostream &os, const Matrix<float> &mat);
-template std::ostream &operator<<(std::ostream &os,
-                                  const Matrix<std::complex<double>> &mat);
-template std::ostream &operator<<(std::ostream &os,
-                                  const Matrix<std::complex<float>> &mat);
+template std::ostream &operator<<(std::ostream &os, const Matrix<std::complex<double>> &mat);
+template std::ostream &operator<<(std::ostream &os, const Matrix<std::complex<float>> &mat);
 
 }  // namespace Linalg
