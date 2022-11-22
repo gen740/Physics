@@ -69,6 +69,9 @@ class Matrix {
   // destructive det
   T det();
 
+  // swap i and j
+  void swap(size_t i, size_t j);
+
   // 内部のvector表現を得る
   std::vector<T> data() { return m_data; }
 

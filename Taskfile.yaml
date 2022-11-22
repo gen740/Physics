@@ -3,7 +3,7 @@ version: '3'
 env:
   CXX: /usr/local/opt/llvm/bin/clang++
   CC: /usr/local/opt/llvm/bin/clang
-  OpenBLAS_DIR: /usr/local/opt/openblas
+  OpenBLAS_DIR: /opt/OpenBLAS
 
 tasks:
   compile:

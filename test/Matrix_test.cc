@@ -61,6 +61,8 @@ TYPED_TEST(MatrixTest, MapTest) {
   // EXPECT_FLOAT_EQ(mc(2, 1), 7);
 }
 
+TYPED_TEST(MatrixTest, SwapTest) { /* TODO: Write a swap test */ }
+
 // cout/save でどれだけの精度で出力するかが設定できる。
 TEST(Matrix, ChangePrecision) {
   auto check_prec = [](int n) {
