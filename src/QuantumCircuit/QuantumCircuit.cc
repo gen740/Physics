@@ -27,20 +27,6 @@ void QCircuit::x_(std::vector<uint32_t> t) {
   if (t.size() != 1) {
     throw std::runtime_error("CX should take target args");
   }
-  // ZMatrix cx_mat(unit_num, unit_num);
-  // for (uint32_t i = 0; i < unit_num; i++) {
-  //   for (uint32_t j = 0; j < unit_num; j++) {
-  //     auto k = j;
-  //     if ((j & (1 << t.at(0))) != 0u) {
-  //       k = j - (1 << t.at(0));
-  //     } else {
-  //       k = j + (1 << t.at(0));
-  //     }
-  //     cx_mat(static_cast<int>(i + 1), static_cast<int>(j + 1)) =
-  //         static_cast<std::complex<double>>(static_cast<double>(i == k));
-  //   }
-  // }
-  // inner_repr = cx_mat * inner_repr;
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << t.at(0))) != 0u) {
       inner_repr.swap(i + 1, (i & ~(1 << t.at(0))) + 1);
@@ -52,22 +38,6 @@ void QCircuit::cx_(std::vector<uint32_t> ct) {
   if (ct.size() != 2) {
     throw std::runtime_error("CX should take control and target args");
   }
-  // ZMatrix cx_mat(unit_num, unit_num);
-  // for (uint32_t i = 0; i < unit_num; i++) {
-  //   for (uint32_t j = 0; j < unit_num; j++) {
-  //     auto k = j;
-  //     if ((j & (1 << ct.at(0))) != 0u) {
-  //       if ((j & (1 << ct.at(1))) != 0u) {
-  //         k = j - (1 << ct.at(1));
-  //       } else {
-  //         k = j + (1 << ct.at(1));
-  //       }
-  //     }
-  //     cx_mat(static_cast<int>(i + 1), static_cast<int>(j + 1)) =
-  //         static_cast<std::complex<double>>(static_cast<double>(i == k));
-  //   }
-  // }
-  // inner_repr = cx_mat * inner_repr;
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << ct.at(0))) != 0u && (i & (1 << ct.at(1))) != 0u) {
       inner_repr.swap(i + 1, (i & ~(1 << ct.at(1))) + 1);
@@ -80,22 +50,6 @@ void QCircuit::ccx_(std::vector<uint32_t> cct) {
     throw std::runtime_error(
         "CCX should take control1, control2 and target args");
   }
-  // ZMatrix ccx_mat(unit_num, unit_num);
-  // for (uint32_t i = 0; i < unit_num; i++) {
-  //   for (uint32_t j = 0; j < unit_num; j++) {
-  //     auto k = j;
-  //     if (((j & (1 << cct.at(0))) != 0u && (j & (1 << cct.at(1))) != 0u)) {
-  //       if ((j & (1 << cct.at(2))) != 0u) {
-  //         k = j - (1 << cct.at(2));
-  //       } else {
-  //         k = j + (1 << cct.at(2));
-  //       }
-  //     }
-  //     ccx_mat(static_cast<int>(i + 1), static_cast<int>(j + 1)) =
-  //         static_cast<std::complex<double>>(static_cast<double>(i == k));
-  //   }
-  // }
-  // inner_repr = ccx_mat * inner_repr;
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << cct.at(0))) != 0u && (i & (1 << cct.at(1))) != 0u &&
         (i & (1 << cct.at(2))) != 0u) {
