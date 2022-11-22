@@ -1,14 +1,19 @@
 #include <QuantumCircuit/QuantumCircuit.h>
 #include <linalg/Matrix.h>
 
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace QuantumCircuit {
 
 using Linalg::Matrix;
 using Linalg::ZMatrix;
 
-QCircuit::QCircuit(int nbit) : unit_num(1 << nbit) {
+QCircuit::QCircuit(int nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
   inner_repr = ZMatrix::Diag(static_cast<std::complex<double>>(1), unit_num);
 };
 
@@ -137,6 +142,94 @@ std::vector<std::pair<uint32_t, double>> measure(const ZMatrix& result) {
     ret.emplace_back(i - 1, std::abs(result(i, 1)));
   }
   return ret;
+}
+
+std::ostream& operator<<(std::ostream& os, const QCircuit& qc) {
+  uint32_t row = 2 * qc.num_qbit - 1;
+  std::vector<std::string> qc_view(row);
+  for (uint32_t i = 0; i < row; i++) {
+    if (i % 2 == 0) {
+      qc_view.at(i) += "|" + std::to_string(i / 2) + "⟩ ";
+    } else {
+      qc_view.at(i) += "    ";
+    }
+  }
+  for (auto&& i : qc.gates) {
+    uint32_t ccx_min;
+    uint32_t ccx_max;
+    switch (i.first) {
+      case Quantum_gate::X:
+        for (uint32_t j = 0; j < row; j++) {
+          if (2 * i.second.at(0) == j) {
+            qc_view.at(j) += "X";
+          } else if (j % 2 == 0) {
+            qc_view.at(j) += "─";
+          } else {
+            qc_view.at(j) += " ";
+          }
+        }
+        break;
+      case Quantum_gate::CX:
+        ccx_min = 2 * *std::min_element(i.second.begin(), i.second.end());
+        ccx_max = 2 * *std::max_element(i.second.begin(), i.second.end());
+        for (uint32_t j = 0; j < row; j++) {
+          if (2 * i.second.at(1) == j) {
+            qc_view.at(j) += "X";
+          } else if (j % 2 == 0 && (ccx_min < j) && (j < ccx_max)) {
+            qc_view.at(j) += "┼";
+          } else if ((ccx_min < j) && (j < ccx_max)) {
+            qc_view.at(j) += "│";
+          } else if (2 * i.second.at(0) == j) {
+            qc_view.at(j) += "●";
+          } else if (j % 2 == 0) {
+            qc_view.at(j) += "─";
+          } else {
+            qc_view.at(j) += " ";
+          }
+        }
+        break;
+      case Quantum_gate::CCX:
+        ccx_min = 2 * *std::min_element(i.second.begin(), i.second.end());
+        ccx_max = 2 * *std::max_element(i.second.begin(), i.second.end());
+        auto c1 = 2 * i.second.at(0);
+        auto c2 = 2 * i.second.at(1);
+        auto t = 2 * i.second.at(2);
+        for (uint32_t j = 0; j < row; j++) {
+          if (t == j) {
+            qc_view.at(j) += "X";
+          } else if (c1 == j || c2 == j) {
+            qc_view.at(j) += "●";
+          } else if (j % 2 == 0 && (ccx_min < j) && (j < ccx_max)) {
+            qc_view.at(j) += "┼";
+          } else if ((ccx_min < j) && (j < ccx_max)) {
+            qc_view.at(j) += "│";
+          } else if (j % 2 == 0) {
+            qc_view.at(j) += "─";
+          } else {
+            qc_view.at(j) += " ";
+          }
+        }
+        break;
+    }
+    for (uint32_t i = 0; i < row; i++) {
+      if (i % 2 == 0) {
+        qc_view.at(i) += "─";
+      } else {
+        qc_view.at(i) += " ";
+      }
+    }
+  }
+  for (uint32_t i = 0; i < row; i++) {
+    if (i % 2 == 0) {
+      qc_view.at(i) += " |" + std::to_string(i / 2) + "⟩";
+    } else {
+      qc_view.at(i) += "    ";
+    }
+  }
+  for (auto&& i : qc_view) {
+    os << i << std::endl;
+  }
+  return os;
 }
 
 }  // namespace QuantumCircuit

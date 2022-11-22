@@ -1,6 +1,9 @@
 #pragma once
 #include <linalg/Matrix.h>
 
+#include <iosfwd>
+#include <vector>
+
 namespace QuantumCircuit {
 
 using Linalg::Matrix;
@@ -21,7 +24,8 @@ enum Quantum_gate {
  *  しかできないが、（2^32 = 4,294,967,296) であるから 32 bit で十分である。
  */
 class QCircuit {
-  uint32_t unit_num;
+  uint32_t unit_num{0};
+  int num_qbit{0};
   bool compiled = false;
 
   ZMatrix inner_repr;
@@ -43,6 +47,8 @@ class QCircuit {
   void compile();
   ZMatrix eval(uint32_t init);
   ZMatrix eval(const ZMatrix& init_mat);
+
+  friend std::ostream& operator<<(std::ostream& os, const QCircuit& qc);
 };
 
 extern std::vector<std::pair<uint32_t, double>> measure(const ZMatrix& result);
