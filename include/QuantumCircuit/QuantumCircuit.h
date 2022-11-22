@@ -25,7 +25,7 @@ enum Quantum_gate {
  */
 class QCircuit {
   uint32_t unit_num{0};
-  int num_qbit{0};
+  uint32_t num_qbit{0};
   bool compiled = false;
 
   ZMatrix inner_repr;
@@ -37,7 +37,7 @@ class QCircuit {
 
  public:
   QCircuit() = delete;
-  explicit QCircuit(int nbit);
+  explicit QCircuit(uint32_t nbit);
   auto get_inner_repr();
 
   void x(uint32_t target);

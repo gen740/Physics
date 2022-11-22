@@ -14,7 +14,7 @@ namespace QuantumCircuit {
 using Linalg::Matrix;
 using Linalg::ZMatrix;
 
-QCircuit::QCircuit(int nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
+QCircuit::QCircuit(uint32_t nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
   if (nbit > 32) {
     throw std::runtime_error("Quantum Circuit cannot handle nbit > 32");
   }
@@ -24,9 +24,6 @@ QCircuit::QCircuit(int nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
 auto QCircuit::get_inner_repr() { return inner_repr; }
 
 void QCircuit::x_(std::vector<uint32_t> t) {
-  if (t.size() != 1) {
-    throw std::runtime_error("CX should take target args");
-  }
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << t.at(0))) != 0u) {
       inner_repr.swap(i + 1, (i & ~(1 << t.at(0))) + 1);
@@ -35,9 +32,6 @@ void QCircuit::x_(std::vector<uint32_t> t) {
 }
 
 void QCircuit::cx_(std::vector<uint32_t> ct) {
-  if (ct.size() != 2) {
-    throw std::runtime_error("CX should take control and target args");
-  }
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << ct.at(0))) != 0u && (i & (1 << ct.at(1))) != 0u) {
       inner_repr.swap(i + 1, (i & ~(1 << ct.at(1))) + 1);
@@ -46,10 +40,6 @@ void QCircuit::cx_(std::vector<uint32_t> ct) {
 }
 
 void QCircuit::ccx_(std::vector<uint32_t> cct) {
-  if (cct.size() != 3) {
-    throw std::runtime_error(
-        "CCX should take control1, control2 and target args");
-  }
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << cct.at(0))) != 0u && (i & (1 << cct.at(1))) != 0u &&
         (i & (1 << cct.at(2))) != 0u) {
@@ -59,14 +49,32 @@ void QCircuit::ccx_(std::vector<uint32_t> cct) {
 }
 
 void QCircuit::x(uint32_t target) {
+  if (target >= num_qbit) {
+    throw std::runtime_error("target is larger than qbit num");
+  }
   gates.emplace_back(Quantum_gate::X, std::vector<uint32_t>{target});
 }
 
 void QCircuit::cx(uint32_t control, uint32_t target) {
+  if (control >= num_qbit) {
+    throw std::runtime_error("control is larger than qbit num");
+  }
+  if (target >= num_qbit) {
+    throw std::runtime_error("target is larger than qbit num");
+  }
   gates.emplace_back(Quantum_gate::CX, std::vector<uint32_t>{control, target});
 }
 
 void QCircuit::ccx(uint32_t control1, uint32_t control2, uint32_t target) {
+  if (control1 >= num_qbit) {
+    throw std::runtime_error("control1 is larger than qbit num");
+  }
+  if (control2 >= num_qbit) {
+    throw std::runtime_error("control2 is larger than qbit num");
+  }
+  if (target >= num_qbit) {
+    throw std::runtime_error("target is larger than qbit num");
+  }
   gates.emplace_back(Quantum_gate::CCX,
                      std::vector<uint32_t>{control1, control2, target});
 }
