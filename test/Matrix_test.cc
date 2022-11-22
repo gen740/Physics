@@ -35,6 +35,7 @@ TYPED_TEST(MatrixTest, IndexAccess) {
   EXPECT_FLOAT_EQ(m(3, 3), 3);
   m[1][1] = 4;
   EXPECT_FLOAT_EQ(m(2, 2), 4);
+
   Matrix<std::complex<TypeParam>> mc(3, 3);
   mc(1, 1) = 1.242;
   EXPECT_FLOAT_EQ(mc[0][0].real(), 1.242);
@@ -54,6 +55,7 @@ TYPED_TEST(MatrixTest, MapTest) {
   EXPECT_FLOAT_EQ(m(1, 1), 4);
   EXPECT_FLOAT_EQ(m(1, 2), 7);
   EXPECT_FLOAT_EQ(m(2, 1), 5);
+
   // Matrix<std::complex<TypeParam>> mc(3, 3); // TODO
   // mc.map([](int c, int r) { return std::complex<double>(c * 3 + r); });
   // EXPECT_FLOAT_EQ(mc(1, 1), 4);

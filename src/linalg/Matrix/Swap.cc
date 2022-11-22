@@ -1,6 +1,4 @@
-#include <optional>
-
-#include "Matrix_Macro.h"
+#include "Utilities.h"
 #include "linalg/Matrix.h"
 
 #ifdef PHYSICS_USE_MKL
@@ -11,40 +9,47 @@
 #include <lapacke.h>
 #endif
 
-#include <algorithm>
 #include <exception>
-#include <fstream>
-#include <initializer_list>
-#include <iomanip>
-#include <iostream>
 
 namespace Linalg {
 
-#define MatrixSwap(Type, blas_t)                                            \
-  template <>                                                               \
-  void Matrix<Type>::swap(size_t i, size_t j, bool COL) {                   \
-    if (COL) {                                                              \
-      if (i > m_COL || j > m_COL) {                                         \
-        throw std::runtime_error("arg is larger than COL size");            \
-      }                                                                     \
-    } else {                                                                \
-      if (i > m_ROW || j > m_ROW) {                                         \
-        throw std::runtime_error("arg is larger than ROW size");            \
-      }                                                                     \
-    }                                                                       \
-    if (i == j) {                                                           \
-      return;                                                               \
-    }                                                                       \
-    if (COL) {                                                              \
-      cblas_##blas_t##swap(static_cast<blasint>(m_COL), &(*this)[0][i - 1], \
-                           static_cast<blasint>(m_COL), &(*this)[0][j - 1], \
-                           static_cast<blasint>(m_COL));                    \
-    } else {                                                                \
-      cblas_##blas_t##swap(static_cast<blasint>(m_ROW), (*this)[i - 1], 1,  \
-                           (*this)[j - 1], 1);                              \
-    }                                                                       \
+template <FloatingPointType T>
+void Matrix<T>::swap(size_t i, size_t j, bool COL) {
+  if (COL) {
+    if (i > m_COL || j > m_COL) {
+      throw std::runtime_error("arg is larger than COL size");
+    }
+  } else {
+    if (i > m_ROW || j > m_ROW) {
+      throw std::runtime_error("arg is larger than ROW size");
+    }
   }
+  if (i == j) {
+    return;
+  }
+  if (COL) {
+    PHYSICS_CONSTEXPR_BLAS_FUNC(      //
+        T,                            //
+        swap,                         //
+        static_cast<blasint>(m_COL),  //
+        &(*this)[0][i - 1],           //
+        static_cast<blasint>(m_COL),  //
+        &(*this)[0][j - 1],           //
+        static_cast<blasint>(m_COL)   //
+    );
+  } else {
+    PHYSICS_CONSTEXPR_BLAS_FUNC(      //
+        T,                            //
+        swap,                         //
+        static_cast<blasint>(m_ROW),  //
+        (*this)[i - 1],               //
+        1,                            //
+        (*this)[j - 1],               //
+        1                             //
+    );
+  }
+}
 
-Implement_Matrix_LAPACK_func(MatrixSwap);
+PHYSICS_REALIZE_MATRIX_MEMBER_FUNC;
 
 }  // namespace Linalg

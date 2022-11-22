@@ -1,4 +1,6 @@
+#include "Utilities.h"
 #include "linalg/Matrix.h"
+#include "linalg/Types.h"
 
 #ifdef PHYSICS_USE_MKL
 #include <mkl_cblas.h>
@@ -10,59 +12,40 @@
 
 namespace Linalg {
 
-template <>
-LU_status Matrix<double>::lu() {
+template <FloatingPointType T>
+LU_status Matrix<T>::lu() {
   LU_status status(static_cast<int>(m_ROW));
-  status.status = LAPACKE_dgetrf(  //
-      LAPACK_COL_MAJOR,            //
-      static_cast<int>(m_COL),     //
-      static_cast<int>(m_ROW),     //
-      m_data.data(),               //
-      static_cast<int>(m_COL),     //
-      status.ipiv.data()           //
+  PHYSICS_CONSTEXPR_LAPACKE_FUNC_WITH_RETURN(  //
+      T,                                       //
+      getrf,                                   //
+      status.status,                           //
+      LAPACK_COL_MAJOR,                        //
+      static_cast<int>(m_COL),                 //
+      static_cast<int>(m_ROW),                 //
+      (*this),                                 //
+      static_cast<int>(m_COL),                 //
+      status.ipiv.data()                       //
   );
   return status;
 }
 
-template <>
-LU_status Matrix<float>::lu() {
-  LU_status status(static_cast<int>(m_ROW));
-  status.status = LAPACKE_sgetrf(  //
-      LAPACK_COL_MAJOR,            //
-      static_cast<int>(m_COL),     //
-      static_cast<int>(m_ROW),     //
-      m_data.data(),               //
-      static_cast<int>(m_COL),     //
-      status.ipiv.data()           //
-  );
-  return status;
+template <FloatingPointType T>
+T Matrix<T>::det() {
+  T det(1.);
+  Matrix m = *this;
+  if (m.m_ROW != m.m_COL) {
+    throw std::runtime_error("Matrix is not squre");
+  }
+  auto status = m.lu();
+  for (size_t i = 0; i < m.m_COL; ++i) {
+    det *= m[i][i];
+    if (status.ipiv.at(i) != static_cast<int>(i + 1)) {
+      det *= -1;
+    }
+  }
+  return det;
 }
 
-template <>
-LU_status Matrix<std::complex<double>>::lu() {
-  LU_status status(static_cast<int>(m_ROW));
-  status.status = LAPACKE_zgetrf(                          //
-      LAPACK_COL_MAJOR,                                    //
-      static_cast<int>(m_COL),                             //
-      static_cast<int>(m_ROW),                             //
-      reinterpret_cast<_Complex double *>(m_data.data()),  //
-      static_cast<int>(m_COL),                             //
-      status.ipiv.data()                                   //
-  );
-  return status;
-}
+PHYSICS_REALIZE_MATRIX_MEMBER_FUNC;
 
-template <>
-LU_status Matrix<std::complex<float>>::lu() {
-  LU_status status(static_cast<int>(m_ROW));
-  status.status = LAPACKE_cgetrf(                         //
-      LAPACK_COL_MAJOR,                                   //
-      static_cast<int>(m_COL),                            //
-      static_cast<int>(m_ROW),                            //
-      reinterpret_cast<_Complex float *>(m_data.data()),  //
-      static_cast<int>(m_COL),                            //
-      status.ipiv.data()                                  //
-  );
-  return status;
-}
 }  // namespace Linalg

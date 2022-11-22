@@ -1,12 +1,11 @@
 #pragma once
 
 #include <array>
+#include <complex>
 #include <functional>
 #include <initializer_list>
 #include <iosfwd>
-#include <memory>
 #include <optional>
-#include <type_traits>
 #include <vector>
 
 #include "linalg/Types.h"
@@ -92,12 +91,18 @@ class Matrix {
   T &operator()(size_t col, size_t row);
   T operator()(size_t col, size_t row) const;
   T *operator[](size_t i) { return &m_data.data()[i * m_COL]; }
+
   // T *operator[](size_t i) const { return &m_data.data()[i * m_COL]; }
 
-  operator T *() { return m_data.data(); }
+  operator T *();
+  operator T const *();
+  operator void *();
+  operator void const *();
+
+  template <class U>
+  operator U *();
 
   Matrix<T> operator*(Matrix<T> mat);
-  // Matrix<T> operator*(Vector<T> mat);
 
   void save(const char *filename, char delimeter = ',',
             bool is_scientific = true);
