@@ -20,6 +20,17 @@ struct LU_status {
   explicit LU_status(int size) : ipiv(size) {}
 };
 
+/*! Matrix Clasas (COL MAJOR)
+ *
+ * 1 4 7
+ * 2 5 8
+ * 3 6 9
+ *
+ * Matrix access (1-index):
+ *
+ * m.(col, row) or m[col - 1][row - 1]
+ *
+ * */
 template <FloatingPointType T = double>
 class Matrix {
  public:
@@ -70,7 +81,7 @@ class Matrix {
   T det();
 
   // swap i and j
-  void swap(size_t i, size_t j);
+  void swap(size_t i, size_t j, bool COL = true) noexcept(false);
 
   // 内部のvector表現を得る
   std::vector<T> data() { return m_data; }

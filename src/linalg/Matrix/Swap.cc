@@ -1,5 +1,6 @@
 #include <optional>
 
+#include "Matrix_Macro.h"
 #include "linalg/Matrix.h"
 
 #ifdef PHYSICS_USE_MKL
@@ -19,84 +20,31 @@
 
 namespace Linalg {
 
-template <>
-void Matrix<double>::swap(size_t i, size_t j) {
-  if (i > m_ROW) {
-    throw std::runtime_error("i is greater than row size");
+#define MatrixSwap(Type, blas_t)                                            \
+  template <>                                                               \
+  void Matrix<Type>::swap(size_t i, size_t j, bool COL) {                   \
+    if (COL) {                                                              \
+      if (i > m_COL || j > m_COL) {                                         \
+        throw std::runtime_error("arg is larger than COL size");            \
+      }                                                                     \
+    } else {                                                                \
+      if (i > m_ROW || j > m_ROW) {                                         \
+        throw std::runtime_error("arg is larger than ROW size");            \
+      }                                                                     \
+    }                                                                       \
+    if (i == j) {                                                           \
+      return;                                                               \
+    }                                                                       \
+    if (COL) {                                                              \
+      cblas_##blas_t##swap(static_cast<blasint>(m_COL), &(*this)[0][i - 1], \
+                           static_cast<blasint>(m_COL), &(*this)[0][j - 1], \
+                           static_cast<blasint>(m_COL));                    \
+    } else {                                                                \
+      cblas_##blas_t##swap(static_cast<blasint>(m_ROW), (*this)[i - 1], 1,  \
+                           (*this)[j - 1], 1);                              \
+    }                                                                       \
   }
-  if (j > m_ROW) {
-    throw std::runtime_error("j is greater than row size");
-  }
-  if (i == j) {
-    return;
-  }
-  cblas_dswap(static_cast<blasint>(m_COL),  //
-              this[i],                      //
-              1,                            //
-              this[j],                      //
-              1                             //
 
-  );
-}
-
-template <>
-void Matrix<float>::swap(size_t i, size_t j) {
-  if (i > m_ROW) {
-    throw std::runtime_error("i is greater than row size");
-  }
-  if (j > m_ROW) {
-    throw std::runtime_error("j is greater than row size");
-  }
-  if (i == j) {
-    return;
-  }
-  cblas_sswap(static_cast<blasint>(m_COL),  //
-              this[i],                      //
-              1,                            //
-              this[j],                      //
-              1                             //
-
-  );
-}
-
-template <>
-void Matrix<std::complex<double>>::swap(size_t i, size_t j) {
-  if (i > m_ROW) {
-    throw std::runtime_error("i is greater than row size");
-  }
-  if (j > m_ROW) {
-    throw std::runtime_error("j is greater than row size");
-  }
-  if (i == j) {
-    return;
-  }
-  cblas_zswap(static_cast<blasint>(m_COL),  //
-              this[i],                      //
-              1,                            //
-              this[j],                      //
-              1                             //
-
-  );
-}
-
-template <>
-void Matrix<std::complex<float>>::swap(size_t i, size_t j) {
-  if (i > m_ROW) {
-    throw std::runtime_error("i is greater than row size");
-  }
-  if (j > m_ROW) {
-    throw std::runtime_error("j is greater than row size");
-  }
-  if (i == j) {
-    return;
-  }
-  cblas_cswap(static_cast<blasint>(m_COL),  //
-              this[i],                      //
-              1,                            //
-              this[j],                      //
-              1                             //
-
-  );
-}
+Implement_Matrix_LAPACK_func(MatrixSwap);
 
 }  // namespace Linalg

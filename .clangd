@@ -28,6 +28,8 @@ Diagnostics:
       - readability-identifier-naming
       - readability-magic-numbers
       - readability-uppercase-literal-suffix
+    CheckOptions:
+      readability-function-cognitive-complexity.Threshold: 45
 
 InlayHints:
   Enabled: Yes

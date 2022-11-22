@@ -61,7 +61,38 @@ TYPED_TEST(MatrixTest, MapTest) {
   // EXPECT_FLOAT_EQ(mc(2, 1), 7);
 }
 
-TYPED_TEST(MatrixTest, SwapTest) { /* TODO: Write a swap test */ }
+TYPED_TEST(MatrixTest, SwapTest) { /* TODO: Write a swap test */
+  Matrix<TypeParam> m(3, 4);
+  m(1, 2) = 34;
+  m(2, 2) = 46;
+  m.swap(1, 2);
+  EXPECT_FLOAT_EQ(m(1, 2), 46);
+  EXPECT_FLOAT_EQ(m(2, 2), 34);
+
+  m(2, 1) = 34;
+  m(2, 2) = 46;
+  m.swap(1, 2, false);
+  EXPECT_FLOAT_EQ(m(2, 1), 46);
+  EXPECT_FLOAT_EQ(m(2, 2), 34);
+
+  ASSERT_THROW(m.swap(5, 6), std::runtime_error);
+
+  Matrix<std::complex<TypeParam>> mz(3, 4);
+
+  mz(1, 2) = {1, 2};
+  mz(2, 2) = {3, 4};
+  mz.swap(1, 2);
+  EXPECT_FLOAT_EQ(mz(1, 2).real(), 3);
+  EXPECT_FLOAT_EQ(mz(2, 2).real(), 1);
+
+  mz(2, 1) = {1, 2};
+  mz(2, 2) = {3, 4};
+  mz.swap(1, 2, false);
+  EXPECT_FLOAT_EQ(mz(2, 1).real(), 3);
+  EXPECT_FLOAT_EQ(mz(2, 2).real(), 1);
+
+  ASSERT_THROW(mz.swap(5, 6), std::runtime_error);
+}
 
 // cout/save でどれだけの精度で出力するかが設定できる。
 TEST(Matrix, ChangePrecision) {

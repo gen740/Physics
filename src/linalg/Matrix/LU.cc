@@ -9,6 +9,7 @@
 #endif
 
 namespace Linalg {
+
 template <>
 LU_status Matrix<double>::lu() {
   LU_status status(static_cast<int>(m_ROW));
