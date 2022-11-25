@@ -3,13 +3,11 @@
 namespace Linalg {
 
 template <class T>
-struct PHYSICS_CONVERSION_TYPE {
+struct PHYSICS_POINTER_CONVERTIBLE_TYPE {
   T data;
-  operator T() { return data; }
-  operator T*() { return &data; }
+  constexpr operator T() { return data; }
+  constexpr operator T*() { return &data; }
 };
-
-}  // namespace Linalg
 
 #define PHYSICS_CONSTEXPR_BLAS_FUNC(TypeParam, blas_func, ...)            \
   if constexpr (std::is_same_v<double, TypeParam>) {                      \
@@ -50,3 +48,5 @@ struct PHYSICS_CONVERSION_TYPE {
   template class Matrix<float>;                \
   template class Matrix<std::complex<double>>; \
   template class Matrix<std::complex<float>>;
+
+}  // namespace Linalg

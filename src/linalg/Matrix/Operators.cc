@@ -33,8 +33,8 @@ Matrix<T> Matrix<T>::operator*(Matrix<T> mat) {
     throw std::runtime_error("Cannot Multiply matrix with different size");
   }
   Matrix<T> ret(m_COL, mat.m_ROW);
-  PHYSICS_CONVERSION_TYPE<T> alpha{1};
-  PHYSICS_CONVERSION_TYPE<T> beta{1};
+  PHYSICS_POINTER_CONVERTIBLE_TYPE<T> alpha{1};
+  PHYSICS_POINTER_CONVERTIBLE_TYPE<T> beta{1};
   PHYSICS_CONSTEXPR_BLAS_FUNC(T,                              //
                               gemm,                           //
                               CBLAS_ORDER::CblasColMajor,     //

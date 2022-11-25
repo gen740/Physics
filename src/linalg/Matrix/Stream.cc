@@ -98,7 +98,9 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T> &mat) {
 
 template std::ostream &operator<<(std::ostream &os, const Matrix<double> &mat);
 template std::ostream &operator<<(std::ostream &os, const Matrix<float> &mat);
-template std::ostream &operator<<(std::ostream &os, const Matrix<std::complex<double>> &mat);
-template std::ostream &operator<<(std::ostream &os, const Matrix<std::complex<float>> &mat);
+template std::ostream &operator<<(std::ostream &os,
+                                  const Matrix<std::complex<double>> &mat);
+template std::ostream &operator<<(std::ostream &os,
+                                  const Matrix<std::complex<float>> &mat);
 
 }  // namespace Linalg

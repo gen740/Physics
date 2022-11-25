@@ -5,6 +5,7 @@
 #include <functional>
 #include <initializer_list>
 #include <iosfwd>
+#include <memory>
 #include <optional>
 #include <vector>
 
