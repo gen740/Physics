@@ -65,13 +65,13 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     enable_testing()
     add_executable(
         physics_test
-        test/Matrix_test.cc
-        test/lapacke_test.cc
-        test/openmp_test.cc
-        test/Fraction_test.cc
-        test/Quantity_test.cc
-        test/QuantumCircuit_test.cc
-        test/generator_test.cc
+        tests/Matrix_test.cc
+        tests/lapacke_test.cc
+        tests/openmp_test.cc
+        tests/Fraction_test.cc
+        tests/Quantity_test.cc
+        tests/QuantumCircuit_test.cc
+        tests/generator_test.cc
         )
     target_link_libraries(
         physics_test
