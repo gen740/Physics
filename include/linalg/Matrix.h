@@ -29,12 +29,7 @@ template <FloatingPointType T = double>
 class Matrix {
  public:
   // Constructors
-  using BaseType = std::conditional_t<
-      std::is_same_v<T, double>, double,
-      std::conditional_t<
-          std::is_same_v<T, float>, float,
-          std::conditional_t<std::is_same_v<T, std::complex<double>>, double,
-                             float>>>;
+  using BaseType = base_type_t<T>;
   explicit Matrix(size_t col, size_t row, T val = 0.0);
   Matrix();
   Matrix(Matrix &&) noexcept = default;
