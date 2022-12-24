@@ -6,17 +6,14 @@ using Fraction::frac;
 TEST(Fraction, Constructor) {
   {
     frac<> f(3, 4);
-    std::cout << f << std::endl;
     EXPECT_DOUBLE_EQ(f.eval(), 3. / 4.);
   }
   {
     frac<> f;
-    std::cout << f << std::endl;
-    EXPECT_DOUBLE_EQ(f.eval(), 1);
+    EXPECT_DOUBLE_EQ(f.eval(), 0);
   }
   {
     frac<> f(31);
-    std::cout << f << std::endl;
     EXPECT_DOUBLE_EQ(f.eval(), 31);
   }
   frac<> f(4, 5);
@@ -27,16 +24,32 @@ TEST(Fraction, Constructor) {
 }
 
 TEST(Fraction, Basic) {
-  frac<> f1(3, 4);
-  frac<> f2(6, 7);
+  frac<int> f1(3, 4);
+  frac<int32_t> f2(6, 7);
   EXPECT_DOUBLE_EQ((f1 + f2).eval(), 45. / 28);
+
+  EXPECT_DOUBLE_EQ((f1 + 3).eval(), 15. / 4);
+  EXPECT_DOUBLE_EQ((3 + f1).eval(), 15. / 4);
+
+  EXPECT_DOUBLE_EQ((f1 - 3).eval(), -9. / 4);
+  EXPECT_DOUBLE_EQ((3 - f1).eval(), 9. / 4);
+
+  EXPECT_DOUBLE_EQ((f1 * 3).eval(), 9. / 4);
+  EXPECT_DOUBLE_EQ((3 * f1).eval(), 9. / 4);
+
+  EXPECT_DOUBLE_EQ((f1 / 3).eval(), 1. / 4);
+  EXPECT_DOUBLE_EQ((3 / f1).eval(), 4. / 1);
+
   EXPECT_DOUBLE_EQ((f1 - f2).eval(), -3. / 28);
   EXPECT_DOUBLE_EQ((-f2).eval(), -6. / 7);
   EXPECT_DOUBLE_EQ((f1 * f2).eval(), 9. / 14);
   EXPECT_DOUBLE_EQ((f1 / f2).eval(), 7. / 8);
 
-  std::cout << (f1 > f2) << std::endl;
-  std::cout << (f1 == f2) << std::endl;
+  frac<int32_t> f3(3, 4);
+  EXPECT_EQ(f1, f3);
+  EXPECT_LT(f1, f2);
+  EXPECT_NE(f1, f2);
+
   f1 = 0;
   EXPECT_DOUBLE_EQ(f1.eval(), 0);
 }

@@ -9,17 +9,13 @@
 
 namespace Fraction {
 
-template <class T>
-concept integral = std::is_integral_v<T>;
-
-template <integral T = int_fast32_t>
+template <std::signed_integral T = int_fast32_t>
 struct frac {
  public:
   // nume / deno
-  T nume{1};  // 分子
+  T nume{0};  // 分子
   T deno{1};  // 分母
 
-  frac() = default;
   constexpr frac(T nume, T deno) {
     auto r = std::gcd(deno, nume);
     this->deno = deno / r;
@@ -33,6 +29,8 @@ struct frac {
     }
   };
   constexpr frac(T n) : nume(n), deno(1) {}
+
+  frac() = default;
   frac(frac const &frac) = default;
   frac(frac &&frac) noexcept = default;
   ~frac() = default;
@@ -105,100 +103,102 @@ struct frac {
   frac &operator=(frac &&frac) noexcept = default;
   frac &operator=(const frac &frac) = default;
 
-  template <integral U>
+  template <std::signed_integral U>
   constexpr friend std::ostream &operator<<(std::ostream &os,
-                                            const frac<U> &frac);
+                                            const frac<U> &frac) {
+    if (frac.deno == 1) {
+      os << "<frac:" << frac.nume << ">";
+    } else {
+      os << "<frac:" << frac.nume << "/" << frac.deno << ">";
+    }
+    return os;
+  }
 
-  template <integral U, integral V>
-  constexpr friend frac<U> operator+(frac<U> a, const frac<V> &b);
+  constexpr friend frac<T> operator+(frac<T> a, const frac<T> &b) {
+    a.add(b);
+    return a;
+  }
 
-  template <integral U, integral V>
-  constexpr friend frac<U> operator-(frac<U> a, const frac<V> &b);
+  template <std::integral U>
+  constexpr friend frac<T> operator+(frac<T> a, const U &b) {
+    a.add(b);
+    return a;
+  }
 
-  template <integral U>
-  constexpr friend frac<U> operator-(frac<U> a);
+  template <std::integral U>
+  constexpr friend frac<U> operator+(const U &a, const frac<T> &b) {
+    return b + a;
+  }
 
-  template <integral U, integral V>
-  constexpr friend frac<U> operator*(frac<U> a, const frac<V> &b);
+  constexpr friend frac<T> operator-(frac<T> a, const frac<T> &b) {
+    a.sub(b);
+    return a;
+  }
 
-  template <integral U, integral V>
-  constexpr friend frac<U> operator*(frac<U> a, const V &b);
+  template <std::integral U>
+  constexpr friend frac<T> operator-(frac<T> a, const U &b) {
+    a.sub(b);
+    return a;
+  }
 
-  template <integral U, integral V>
-  constexpr friend frac<U> operator/(frac<U> a, const frac<V> &b);
+  template <std::integral U>
+  constexpr friend frac<U> operator-(const U &a, const frac<T> &b) {
+    return -b + a;
+  }
 
-  template <integral U, integral V>
-  constexpr friend frac<U> operator/(frac<U> a, const V &b);
+  constexpr friend frac<T> operator-(frac<T> a) { return {-a.nume, a.deno}; }
 
-  // template <integral U, integral V>
-  // constexpr friend int operator<=>(frac<U>, frac<V>);
+  constexpr friend frac<T> operator*(frac<T> a, const frac<T> &b) {
+    a.mul(b);
+    return a;
+  }
 
-  template <integral U, integral V>
-  constexpr friend bool operator==(frac<U>, frac<V>);
+  template <std::integral U>
+  constexpr friend frac<T> operator*(frac<T> a, const U &b) {
+    a.mul(b);
+    return a;
+  }
 
-  template <integral U>
+  template <std::integral U>
+  constexpr friend frac<U> operator*(const U &a, const frac<T> &b) {
+    return b * a;
+  }
+
+  constexpr friend frac<T> operator/(frac<T> a, const frac<T> &b) {
+    a.div(b);
+    return a;
+  }
+
+  template <std::integral U>
+  constexpr friend frac<T> operator/(frac<T> a, const U &b) {
+    a.div(b);
+    return a;
+  }
+
+  template <std::integral U>
+  constexpr friend frac<T> operator/(const U &a, const frac<T> &b) {
+    frac<T> ret(a);
+    ret.div(b);
+    return ret;
+  }
+
+  template <std::signed_integral U>
+  constexpr friend bool operator==(frac<T> x, frac<U> y) {
+    return (x.deno == y.deno) && (x.nume == y.nume);
+  }
+
+  template <std::signed_integral U>
   constexpr auto operator<=>(const frac<U> &x) const {
     return this->eval() <=> x.eval();
+  }
+
+  template <std::signed_integral U>
+  constexpr operator frac<U>() const {
+    return frac<U>(deno, nume);
   }
 
   constexpr void operator++([[maybe_unused]] int a) { add(1); }
   constexpr void operator--([[maybe_unused]] int a) { sub(1); }
 };
-
-template <integral T>
-constexpr std::ostream &operator<<(std::ostream &os, const frac<T> &frac) {
-  if (frac.deno == 1) {
-    os << "<frac:" << frac.nume << ">";
-  } else {
-    os << "<frac:" << frac.nume << "/" << frac.deno << ">";
-  }
-  return os;
-}
-
-template <integral U, integral V>
-constexpr frac<U> operator+(frac<U> a, const frac<V> &b) {
-  a.add(b);
-  return a;
-}
-
-template <integral U, integral V>
-constexpr frac<U> operator-(frac<U> a, const frac<V> &b) {
-  a.sub(b);
-  return a;
-}
-
-template <integral U>
-constexpr frac<U> operator-(frac<U> a) {
-  return {-a.nume, a.deno};
-}
-
-template <integral U, integral V>
-constexpr frac<U> operator*(frac<U> a, const frac<V> &b) {
-  a.mul(b);
-  return a;
-}
-
-template <integral U, integral V>
-constexpr frac<U> operator*(frac<U> a, const V &b) {
-  a.mul(b);
-  return a;
-}
-
-template <integral U, integral V>
-constexpr frac<U> operator/(frac<U> a, const frac<V> &b) {
-  a.div(b);
-  return a;
-}
-
-template <integral U, integral V>
-constexpr frac<U> operator/(frac<U> a, const V &b) {
-  a.div(b);
-  return a;
-}
-
-template <integral U, integral V>
-constexpr bool operator==(frac<U> x, frac<V> y) {
-  return (x.deno == y.deno) && (x.nume == y.nume);
-}
 
 }  // namespace Fraction
