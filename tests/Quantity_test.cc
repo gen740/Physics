@@ -5,10 +5,7 @@
 using Quantity_Base::Quantity_base;
 
 TEST(Quantity, QuantityBase) {
-  // std::cout << a.value << std::endl;
-  // A<AAA<4>{}> a;
   using Quantity_Base::frac;
-  // constexpr frac<int> f1{1, 2);
   Quantity_base<frac{3, 5}, frac{1, 2}, frac{4, 3}, frac{3, 7}> a;
   EXPECT_EQ(a.get_L(), frac(3, 5));
   EXPECT_EQ(a.get_M(), frac(1, 2));
@@ -44,9 +41,6 @@ TEST(Quantity, Basic) {
   EXPECT_TRUE((a1 / 3).is_same_dim_as(a1));
   EXPECT_TRUE((3 / a1).is_same_dim_as(
       Quantity_base<frac{-3, 5}, frac{-1, 2}, frac{-4, 3}, frac{-3, 7}>(0)));
-  auto u = -a1;
-  // std::cout << u.abs() << std::endl;
-  // EXPECT_DOUBLE_EQ(u.abs(), a1);
 
   Quantity_base<frac{1}, frac{1}, frac{2}, frac{2}> a(7.);
   EXPECT_DOUBLE_EQ(a.sqrt().value, sqrt(7));
@@ -80,16 +74,13 @@ TEST(Quantity, Basic) {
 }
 
 TEST(Quantity, Units) {
-  // std::cout << DimensionLess(1) << std::endl;
-  // std::cout << Length(1) / Time(1) << std::endl;
   Quantity::Vel v(3.4);
   EXPECT_TRUE(v.is_same_dim_as(Quantity_base<1, 0, -1, 0>{}));
 }
 
 TEST(Quantity, Literals) {
   using namespace Quantity::Literals;
-  // std::cout << Quantity::Units::milli * Quantity::meter << std::endl;
-  std::cout << 1.4_m << std::endl;
-  std::cout << 1.4_mm << std::endl;
-  // EXPECT_EQ(1_m, Quantity_base<1, 0, 0, 0>(1.0));
+  // std::cout << 1.4_m << std::endl;
+  // std::cout << 1.4_mm << std::endl;
+  // EXPECT_EQ(1_m, (Quantity_base<1, 0, 0, 0>(1.0)));
 }

@@ -13,5 +13,5 @@ tasks:
     silent: true
   execute:
     cmds:
-      - ./build/physics_test 
+      - ./build/physics_test --gtest_filter="autodiff*"
     silent: true
