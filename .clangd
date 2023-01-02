@@ -16,6 +16,7 @@ Diagnostics:
       - readability*
       - cppcoreguidelines*
     Remove:
+      - bugprone-easily-swappable-parameters
       - cppcoreguidelines-avoid-magic-numbers
       - cppcoreguidelines-avoid-non-const-global-variables
       - cppcoreguidelines-init-variables
