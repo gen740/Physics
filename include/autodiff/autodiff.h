@@ -48,14 +48,23 @@ class dual {
   dual(ValueMap &&value_) : id_{0}, value_(std::move(value_)) {}
 
  public:
+  template <class... U>
+    requires(std::convertible_to<U, std::pair<dual, int>> && ...)
+  ValType derivative(U... where) {
+    std::vector<std::pair<dual, int>> w = {where...};
+    std::map<std::uint_fast16_t, int_fast16_t> key;
+    for (auto &&[dual, val] : w) {
+      key.insert_or_assign(dual.id_, val);
+    }
+    return value_.at(key);
+  }
+
   // Newly constructed dual has unique id (1-indexed)
   dual(ValType &&value)
       : id_(++id_counter), value_({{{{{id_}, 0}}, value}, {{{{id_}, 1}}, 1}}) {}
 
   constexpr friend std::ostream &operator<<(std::ostream &os,
                                             const dual<Rank, T> &dual) {
-    // std::cout << "value: " << dual.value_.at(0, 0) << " [" << Rank << "]"
-    //           << std::endl;
     for (auto &&[div, value] : dual.value_) {
       for (auto &&[rank, dim] : div) {
         std::cout << rank << "," << dim << std::endl;
@@ -77,15 +86,8 @@ class dual {
     ValueMap v;
 
     for (auto &&[a_rank, a_val] : a.value_) {
-      if (a_val == 0) {
-        continue;
-      }
       for (auto &&[b_rank, b_val] : b.value_) {
-        if (b_val == 0) {
-          continue;
-        }
         int rank_counter{0};
-
         std::map<uint_fast16_t, int_fast16_t> key;
 
         for (auto &&[a_id, a_dim] : a_rank) {
@@ -93,11 +95,16 @@ class dual {
           rank_counter += a_dim;
         }
 
-        ValType ret_value{1};
-
         for (auto &&[b_id, b_dim] : b_rank) {
           rank_counter += b_dim;
-          std::cout << rank_counter << std::endl;
+        }
+
+        if (rank_counter > Rank) {
+          continue;
+        }
+
+        ValType ret_value{1};
+        for (auto &&[b_id, b_dim] : b_rank) {
           if (key.contains(b_id)) {
             key.at(b_id) += b_dim;
             ret_value *= permutation_(key.at(b_id), b_dim);
@@ -106,12 +113,10 @@ class dual {
           }
         }
 
-        if (rank_counter > Rank) {
-          // Prune
+        ret_value *= a_val * b_val;
+        if (ret_value == 0) {
           continue;
         }
-
-        ret_value *= a_val * b_val;
 
         if (v.contains(key)) {
           v.at(key) += ret_value;
@@ -123,7 +128,6 @@ class dual {
 
     return {std::move(v)};
   }
-
 };
 
 };  // namespace autodiff

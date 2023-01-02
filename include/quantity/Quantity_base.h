@@ -1,4 +1,5 @@
 #pragma once
+
 #include <fraction/Fraction.h>
 
 namespace Quantity_Base {

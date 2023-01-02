@@ -1,4 +1,5 @@
 #pragma once
+
 #include <linalg/Matrix.h>
 
 #include <iosfwd>
