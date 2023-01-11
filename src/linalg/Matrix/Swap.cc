@@ -16,11 +16,11 @@ namespace Linalg {
 template <FloatingPointType T>
 void Matrix<T>::swap(size_t i, size_t j, bool COL) {
   if (COL) {
-    if (i > m_COL || j > m_COL) {
+    if (i > m_COL || j > m_COL) [[unlikely]] {
       throw std::runtime_error("arg is larger than COL size");
     }
   } else {
-    if (i > m_ROW || j > m_ROW) {
+    if (i > m_ROW || j > m_ROW) [[unlikely]] {
       throw std::runtime_error("arg is larger than ROW size");
     }
   }

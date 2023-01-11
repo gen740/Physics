@@ -13,7 +13,7 @@ namespace Linalg {
 
 template <FloatingPointType T>
 T &Matrix<T>::operator()(size_t col, size_t row) {
-  if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) {
+  if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) [[likely]] {
     return m_data[(row - 1) * m_COL + (col - 1)];
   }
   throw std::runtime_error("Index out of range");
@@ -21,7 +21,7 @@ T &Matrix<T>::operator()(size_t col, size_t row) {
 
 template <FloatingPointType T>
 T Matrix<T>::operator()(size_t col, size_t row) const {
-  if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) {
+  if (1 <= col && col <= m_COL && 1 <= row && row <= m_ROW) [[likely]] {
     return m_data[(row - 1) * m_COL + (col - 1)];
   }
   throw std::runtime_error("Index out of range");
@@ -29,7 +29,7 @@ T Matrix<T>::operator()(size_t col, size_t row) const {
 
 template <FloatingPointType T>
 Matrix<T> Matrix<T>::operator*(Matrix<T> mat) {
-  if (m_ROW != mat.m_COL) {
+  if (m_ROW != mat.m_COL) [[unlikely]] {
     throw std::runtime_error("Cannot Multiply matrix with different size");
   }
   Matrix<T> ret(m_COL, mat.m_ROW);

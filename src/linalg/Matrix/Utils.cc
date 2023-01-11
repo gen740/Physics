@@ -31,7 +31,7 @@ Matrix<T>::Matrix(const Matrix &mat)
 template <FloatingPointType T>
 Matrix<T>::Matrix(const Matrix<T> &mat, size_t col, size_t row)
     : m_COL(col), m_ROW(row) {
-  if (mat.m_ROW * mat.m_COL != col * row) {
+  if (mat.m_ROW * mat.m_COL != col * row) [[unlikely]] {
     throw std::runtime_error("配列の大きさが違います");
   }
   m_data = mat.m_data;
@@ -40,7 +40,7 @@ Matrix<T>::Matrix(const Matrix<T> &mat, size_t col, size_t row)
 template <FloatingPointType T>
 Matrix<T>::Matrix(Matrix<T> &&mat, size_t col, size_t row)
     : m_COL(col), m_ROW(row) {
-  if (mat.m_ROW * mat.m_COL != col * row) {
+  if (mat.m_ROW * mat.m_COL != col * row) [[unlikely]] {
     throw std::runtime_error("配列の大きさが違います");
   }
   m_data = std::move(mat.m_data);
@@ -50,7 +50,7 @@ template <FloatingPointType T>
 Matrix<T>::Matrix(std::vector<std::vector<T>> vec)
     : m_COL(vec.size()), m_ROW(vec[0].size()) {
   for (size_t i = 1; i < m_COL; ++i) {
-    if (m_ROW != static_cast<size_t>(vec[i].size())) {
+    if (m_ROW != static_cast<size_t>(vec[i].size())) [[unlikely]] {
       throw std::runtime_error("Matrix Constructor recieve none matrix vector");
     }
   }
@@ -102,7 +102,7 @@ Matrix<T> Matrix<T>::Diag(std::initializer_list<T> vec,
   if (!row.has_value()) {
     row = vec.size();
   }
-  if (vec.size() > col && vec.size() > row) {
+  if (vec.size() > col && vec.size() > row) [[unlikely]] {
     throw std::runtime_error(
         "Not Correct args, col and row should be larger than vector size");
   }

@@ -15,7 +15,7 @@ using Linalg::Matrix;
 using Linalg::ZMatrix;
 
 QCircuit::QCircuit(uint32_t nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
-  if (nbit > 32) {
+  if (nbit > 32) [[unlikely]] {
     throw std::runtime_error("Quantum Circuit cannot handle nbit > 32");
   }
   inner_repr = ZMatrix::Diag(static_cast<std::complex<double>>(1), unit_num);
@@ -49,30 +49,30 @@ void QCircuit::ccx_(std::vector<uint32_t> cct) {
 }
 
 void QCircuit::x(uint32_t target) {
-  if (target >= num_qbit) {
+  if (target >= num_qbit) [[unlikely]] {
     throw std::runtime_error("target is larger than qbit num");
   }
   gates.emplace_back(Quantum_gate::X, std::vector<uint32_t>{target});
 }
 
 void QCircuit::cx(uint32_t control, uint32_t target) {
-  if (control >= num_qbit) {
+  if (control >= num_qbit) [[unlikely]] {
     throw std::runtime_error("control is larger than qbit num");
   }
-  if (target >= num_qbit) {
+  if (target >= num_qbit) [[unlikely]] {
     throw std::runtime_error("target is larger than qbit num");
   }
   gates.emplace_back(Quantum_gate::CX, std::vector<uint32_t>{control, target});
 }
 
 void QCircuit::ccx(uint32_t control1, uint32_t control2, uint32_t target) {
-  if (control1 >= num_qbit) {
+  if (control1 >= num_qbit) [[unlikely]] {
     throw std::runtime_error("control1 is larger than qbit num");
   }
-  if (control2 >= num_qbit) {
+  if (control2 >= num_qbit) [[unlikely]] {
     throw std::runtime_error("control2 is larger than qbit num");
   }
-  if (target >= num_qbit) {
+  if (target >= num_qbit) [[unlikely]] {
     throw std::runtime_error("target is larger than qbit num");
   }
   gates.emplace_back(Quantum_gate::CCX,
@@ -102,7 +102,7 @@ void QCircuit::compile() {
 }
 
 ZMatrix QCircuit::eval(uint32_t init) {
-  if (!compiled) {
+  if (!compiled) [[unlikely]] {
     throw std::runtime_error("Quantum circuit must compiled before evalation");
   }
   ZMatrix init_state(unit_num, 1);
@@ -111,7 +111,7 @@ ZMatrix QCircuit::eval(uint32_t init) {
 }
 
 ZMatrix QCircuit::eval(const ZMatrix& init_mat) {
-  if (!compiled) {
+  if (!compiled) [[unlikely]] {
     throw std::runtime_error("Quantum circuit must compiled before evalation");
   }
   return inner_repr * init_mat;
