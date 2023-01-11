@@ -23,6 +23,28 @@ QCircuit::QCircuit(uint32_t nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
 
 auto QCircuit::get_inner_repr() { return inner_repr; }
 
+void QCircuit::h_(std::vector<uint32_t> t) {
+  factor *= 1 / std::sqrt(2);
+  auto ir_copy = inner_repr;
+  for (size_t i = 0; i < unit_num; i++) {
+    if ((i & (1 << t.at(0))) != 0u) {
+      inner_repr.swap(i + 1, (i & ~(1 << t.at(0))) + 1);
+    }
+  }
+  for (size_t i = 0; i < unit_num; i++) {
+    for (size_t j = 0; j < unit_num; j++) {
+      if (((~i & (1 << t.at(0))) != 0u) && ((~j & (1 << t.at(0))) != 0u)) {
+        ir_copy[i][j] *= -1;
+      }
+    }
+  }
+  for (size_t i = 0; i < unit_num; i++) {
+    for (size_t j = 0; j < unit_num; j++) {
+      inner_repr[i][j] += ir_copy[i][j];
+    }
+  }
+}
+
 void QCircuit::x_(std::vector<uint32_t> t) {
   for (size_t i = 0; i < unit_num; i++) {
     if ((i & (1 << t.at(0))) != 0u) {
@@ -46,6 +68,13 @@ void QCircuit::ccx_(std::vector<uint32_t> cct) {
       inner_repr.swap(i + 1, (i & ~(1 << cct.at(2))) + 1);
     }
   }
+}
+
+void QCircuit::h(uint32_t target) {
+  if (target >= num_qbit) [[unlikely]] {
+    throw std::runtime_error("target is larger than qbit num");
+  }
+  gates.emplace_back(Quantum_gate::H, std::vector<uint32_t>{target});
 }
 
 void QCircuit::x(uint32_t target) {
@@ -84,6 +113,9 @@ void QCircuit::compile() {
   for (auto&& i : gates) {
     std::cout << "#" << std::flush;
     switch (i.first) {
+      case Quantum_gate::H:
+        h_(i.second);
+        break;
       case Quantum_gate::X:
         x_(i.second);
         break;
@@ -107,12 +139,28 @@ ZMatrix QCircuit::eval(uint32_t init) {
   }
   ZMatrix init_state(unit_num, 1);
   init_state(init + 1, 1) = 1;
+  if (factor != 1) {
+    for (size_t i = 0; i < unit_num; i++) {
+      for (size_t j = 0; j < unit_num; j++) {
+        inner_repr[i][j] *= factor;
+      }
+    }
+    factor = 1;
+  }
   return inner_repr * ZMatrix(init_state);
 }
 
 ZMatrix QCircuit::eval(const ZMatrix& init_mat) {
   if (!compiled) [[unlikely]] {
     throw std::runtime_error("Quantum circuit must compiled before evalation");
+  }
+  if (factor != 1) {
+    for (size_t i = 0; i < unit_num; i++) {
+      for (size_t j = 0; j < unit_num; j++) {
+        inner_repr[i][j] *= factor;
+      }
+    }
+    factor = 1;
   }
   return inner_repr * init_mat;
 }
@@ -136,10 +184,26 @@ std::ostream& operator<<(std::ostream& os, const QCircuit& qc) {
       qc_view.at(i) += "    ";
     }
   }
+  for (uint32_t j = 0; j < row; j++) {
+    if (j % 2 == 0) {
+      qc_view.at(j) += "─";
+    }
+  }
   for (auto&& i : qc.gates) {
     uint32_t ccx_min;
     uint32_t ccx_max;
     switch (i.first) {
+      case Quantum_gate::H:
+        for (uint32_t j = 0; j < row; j++) {
+          if (2 * i.second.at(0) == j) {
+            qc_view.at(j) += "H";
+          } else if (j % 2 == 0) {
+            qc_view.at(j) += "─";
+          } else {
+            qc_view.at(j) += " ";
+          }
+        }
+        break;
       case Quantum_gate::X:
         for (uint32_t j = 0; j < row; j++) {
           if (2 * i.second.at(0) == j) {

@@ -13,8 +13,9 @@ using Linalg::ZMatrix;
  *
  *  Detailed description
  */
-enum Quantum_gate {
+enum class Quantum_gate : uint_fast8_t {
   X,
+  H,
   CX,
   CCX,
 };
@@ -27,10 +28,12 @@ class QCircuit {
   uint32_t unit_num{0};
   uint32_t num_qbit{0};
   bool compiled = false;
+  double factor = 1;
 
   ZMatrix inner_repr;
   std::vector<std::pair<Quantum_gate, std::vector<uint32_t>>> gates;
 
+  void h_(std::vector<uint32_t> t);
   void x_(std::vector<uint32_t> t);
   void cx_(std::vector<uint32_t> ct);
   void ccx_(std::vector<uint32_t> cct);
@@ -40,6 +43,7 @@ class QCircuit {
   explicit QCircuit(uint32_t nbit);
   auto get_inner_repr();
 
+  void h(uint32_t target);
   void x(uint32_t target);
   void cx(uint32_t control, uint32_t target);
   void ccx(uint32_t control1, uint32_t control2, uint32_t target);
