@@ -24,8 +24,8 @@ TEST(Fraction, Constructor) {
 }
 
 TEST(Fraction, Basic) {
-  frac<> f1(3, 4);
-  frac<> f2(6, 7);
+  frac<int> f1(3, 4);
+  frac<int32_t> f2(6, 7);
   EXPECT_DOUBLE_EQ((f1 + f2).eval(), 45. / 28);
 
   EXPECT_DOUBLE_EQ((f1 + 3).eval(), 15. / 4);
@@ -45,7 +45,7 @@ TEST(Fraction, Basic) {
   EXPECT_DOUBLE_EQ((f1 * f2).eval(), 9. / 14);
   EXPECT_DOUBLE_EQ((f1 / f2).eval(), 7. / 8);
 
-  frac<> f3(3, 4);
+  frac<int32_t> f3(3, 4);
   EXPECT_EQ(f1, f3);
   EXPECT_LT(f1, f2);
   EXPECT_NE(f1, f2);
