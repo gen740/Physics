@@ -105,9 +105,8 @@ struct frac {
   frac &operator=(frac &&frac) noexcept = default;
   frac &operator=(const frac &frac) = default;
 
-  template <std::signed_integral U>
   constexpr friend std::ostream &operator<<(std::ostream &os,
-                                            const frac<U> &frac) {
+                                            const frac<T> &frac) {
     if (frac.deno == 1) {
       os << "<frac:" << frac.nume << ">";
     } else {

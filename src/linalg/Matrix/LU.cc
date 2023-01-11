@@ -33,7 +33,7 @@ template <FloatingPointType T>
 T Matrix<T>::det() {
   T det(1.);
   Matrix m = *this;
-  if (m.m_ROW != m.m_COL) {
+  if (m.m_ROW != m.m_COL) [[unlikely]] {
     throw std::runtime_error("Matrix is not squre");
   }
   auto status = m.lu();
