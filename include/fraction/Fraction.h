@@ -105,6 +105,7 @@ struct frac {
   frac &operator=(frac &&frac) noexcept = default;
   frac &operator=(const frac &frac) = default;
 
+  // TODO(gen740): Ubuntu build would be failed by ODR when frac<int> instantiation
   template <std::signed_integral U>
   constexpr friend std::ostream &operator<<(std::ostream &os,
                                             const frac<U> &frac) {
