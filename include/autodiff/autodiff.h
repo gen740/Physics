@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <vector>
 
 namespace autodiff {
 
@@ -48,13 +49,46 @@ class dual {
   dual(ValueMap &&value_) : id_{0}, value_(std::move(value_)) {}
 
  public:
-  template <class... U>
-    requires(std::convertible_to<U, std::pair<dual, int>> && ...)
-  ValType derivative(U... where) {
-    std::vector<std::pair<dual, int>> w = {where...};
+  // dual<Rank, ValType> reciprocal_() const {
+  //   auto retvalue = value_;
+  //   ValType v0 = 0;
+  //   for (auto &&[dimpair, val] : retvalue) {
+  //     auto dim_sum = 0;
+  //     for (auto &&[id, dim] : dimpair) {
+  //       dim_sum += dim;
+  //     }
+  //     if (dim_sum == 0) {
+  //       v0 = val;
+  //       val = 1 / val;
+  //     } else {
+  //       val = -val / (v0 * v0);
+  //       // for (int i = 0; i < dim_sum; i++) {
+  //       //   val /= v0;
+  //       // }
+  //     }
+  //   }
+  //   return std::move(retvalue);
+  // }
+
+ public:
+  // template <class... U>
+  //   requires(std::convertible_to<U, std::pair<dual, int>> && ...)
+  // ValType derivative(U &&...where) {
+  //   std::vector<std::pair<dual, int>> w = {std::pair<dual, int>(where)...};
+  //   std::map<std::uint_fast16_t, int_fast16_t> key;
+  //   for (auto &&[dual, val] : w) {
+  //     key.insert_or_assign(dual.id_, val);
+  //   }
+  //   return value_.at(key);
+  // }
+
+  ValType derivative(std::vector<std::pair<dual<Rank, T>, int>> where) {
     std::map<std::uint_fast16_t, int_fast16_t> key;
-    for (auto &&[dual, val] : w) {
-      key.insert_or_assign(dual.id_, val);
+    for (auto &&[d, val] : where) {
+      key.insert_or_assign(d.id_, val);
+    }
+    if (!value_.contains(key)) [[unlikely]] {
+      return 0.;
     }
     return value_.at(key);
   }
@@ -64,7 +98,7 @@ class dual {
       : id_(++id_counter), value_({{{{{id_}, 0}}, value}, {{{{id_}, 1}}, 1}}) {}
 
   constexpr friend std::ostream &operator<<(std::ostream &os,
-                                            const dual<Rank, T> &dual) {
+                                            const dual<Rank, ValType> &dual) {
     for (auto &&[div, value] : dual.value_) {
       for (auto &&[rank, dim] : div) {
         std::cout << rank << "," << dim << std::endl;
@@ -74,17 +108,11 @@ class dual {
     return os;
   }
 
-  // dual(ValType val) {
-  //   value_[0] = val;
-  //   value_[1] = 1;
-  // }
-
   auto value() { return value_; }
 
   friend dual<Rank, ValType> operator*(const dual<Rank, ValType> &a,
                                        const dual<Rank, ValType> &b) {
     ValueMap v;
-
     for (auto &&[a_rank, a_val] : a.value_) {
       for (auto &&[b_rank, b_val] : b.value_) {
         int rank_counter{0};
@@ -125,8 +153,44 @@ class dual {
         }
       }
     }
-
     return {std::move(v)};
+  }
+
+  friend dual<Rank, ValType> operator*(const ValType &a,
+                                       const dual<Rank, ValType> &b) {
+    ValueMap v;
+    for (auto &&[b_rank, b_val] : b.value_) {
+      v.insert_or_assign(b_rank, a * b_val);
+    }
+    return {std::move(v)};
+  }
+
+  friend dual<Rank, ValType> operator*(const dual<Rank, ValType> &a,
+                                       const ValType &b) {
+    ValueMap v;
+    for (auto &&[a_rank, a_val] : a.value_) {
+      v.insert_or_assign(a_rank, b * a_val);
+    }
+    return {std::move(v)};
+  }
+
+  friend dual<Rank, ValType> operator/(const ValType &a,
+                                       const dual<Rank, ValType> &b) {
+    return a * b.reciprocal_();
+  }
+
+  friend dual<Rank, ValType> operator/(const dual<Rank, ValType> &a,
+                                       const ValType &b) {
+    ValueMap v;
+    for (auto &&[a_rank, a_val] : a.value_) {
+      v.insert_or_assign(a_rank, a_val / b);
+    }
+    return {std::move(v)};
+  }
+
+  friend dual<Rank, ValType> operator/(const dual<Rank, ValType> &a,
+                                       const dual<Rank, ValType> &b) {
+    return a * b.reciprocal_();
   }
 };
 
