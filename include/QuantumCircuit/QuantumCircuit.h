@@ -1,8 +1,8 @@
 #pragma once
 #include <linalg/Matrix.h>
 
-#include <iosfwd>
 #include <any>
+#include <iosfwd>
 #include <vector>
 
 namespace QuantumCircuit {
@@ -16,9 +16,10 @@ using Linalg::ZMatrix;
  */
 enum class Quantum_gate : uint_fast8_t {
   X,
+  RX,
+  RY,
   H,
   P,
-  R,
   CX,
   CCX,
 };
@@ -37,7 +38,8 @@ class QCircuit {
   std::vector<std::pair<Quantum_gate, std::any>> gates;
 
   void p_(std::tuple<uint64_t, double> tp);
-  void r_(std::tuple<uint64_t, double> tp);
+  void rx_(std::tuple<uint64_t, double> tp);
+  void ry_(std::tuple<uint64_t, double> tp);
   void h_(std::tuple<uint64_t> t);
   void x_(std::tuple<uint64_t> t);
   void cx_(std::tuple<uint64_t, uint64_t> ct);
@@ -49,7 +51,8 @@ class QCircuit {
   ZMatrix get_inner_repr();
 
   void p(uint64_t target, double phase);
-  void r(uint64_t target, double phase);
+  void rx(uint64_t target, double phase);
+  void ry(uint64_t target, double phase);
   void h(uint64_t target);
   void x(uint64_t target);
   void cx(uint64_t control, uint64_t target);

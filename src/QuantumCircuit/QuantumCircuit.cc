@@ -32,6 +32,12 @@ void QCircuit::compile() {
       case Quantum_gate::P:
         p_(std::any_cast<std::tuple<uint64_t, double>>(i.second));
         break;
+      case Quantum_gate::RX:
+        rx_(std::any_cast<std::tuple<uint64_t, double>>(i.second));
+        break;
+      case Quantum_gate::RY:
+        ry_(std::any_cast<std::tuple<uint64_t, double>>(i.second));
+        break;
       case Quantum_gate::H:
         h_(std::any_cast<std::tuple<uint64_t>>(i.second));
         break;

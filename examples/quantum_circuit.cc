@@ -65,6 +65,7 @@ void g() {
 
   q.h(0);
   q.cx(0, 1);
+  q.rx(0, 3.248);
   q.h(0);
 
   std::cout << q << std::endl;
@@ -78,7 +79,7 @@ int main() {
   // a();
   // b();
   // c();
-  h();
-  // g();
+  // h();
+  g();
   return 0;
 }

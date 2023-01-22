@@ -28,14 +28,31 @@ void QCircuit::p_(std::tuple<uint64_t, double> tp) {
   }
 }
 
-void QCircuit::r_(std::tuple<uint64_t, double> tp) {
-  auto phase = std::exp(std::get<1>(tp) * std::imag(1));
-  // auto phase = 1;
+void QCircuit::rx_(std::tuple<uint64_t, double> tp) {
+  auto [t, p] = tp;
+  double diag = std::cos(p / 2);
+  double nondiag = -std::imag(1.) * std::sin(p / 2);
   for (size_t i = 0; i < unit_num; i++) {
     for (size_t j = 0; j < unit_num; j++) {
-      if (((i & (1 << std::get<0>(tp))) != 0u) &&
-          ((j & (1 << std::get<0>(tp))) != 0u)) {
-        inner_repr[i][j] *= phase;
+      if (((i & (1 << t)) != 0u) == ((j & (1 << t)) != 0u)) {
+        inner_repr[i][j] *= diag;
+      } else {
+        inner_repr[i][j] *= nondiag;
+      }
+    }
+  }
+}
+
+void QCircuit::ry_(std::tuple<uint64_t, double> tp) {
+  auto [t, p] = tp;
+  double diag = std::cos(p / 2);
+  double nondiag = std::sin(p / 2);
+  for (size_t i = 0; i < unit_num; i++) {
+    for (size_t j = 0; j < unit_num; j++) {
+      if (((i & (1 << t)) != 0u) == ((j & (1 << t)) != 0u)) {
+        inner_repr[i][j] *= diag;
+      } else {
+        inner_repr[i][j] *= ((i & (1 << t)) != 0u) ? nondiag : -nondiag;
       }
     }
   }
@@ -96,6 +113,20 @@ void QCircuit::p(uint64_t target, double phase) {
     throw std::runtime_error("target is larger than qbit num");
   }
   gates.emplace_back(Quantum_gate::H, std::make_tuple(target, phase));
+}
+
+void QCircuit::rx(uint64_t target, double phase) {
+  if (target >= num_qbit) [[unlikely]] {
+    throw std::runtime_error("target is larger than qbit num");
+  }
+  gates.emplace_back(Quantum_gate::RX, std::make_tuple(target, phase));
+}
+
+void QCircuit::ry(uint64_t target, double phase) {
+  if (target >= num_qbit) [[unlikely]] {
+    throw std::runtime_error("target is larger than qbit num");
+  }
+  gates.emplace_back(Quantum_gate::RY, std::make_tuple(target, phase));
 }
 
 void QCircuit::h(uint64_t target) {

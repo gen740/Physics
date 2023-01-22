@@ -32,9 +32,6 @@ std::ostream& operator<<(std::ostream& os, const QCircuit& qc) {
     switch (i.first) {
       case Quantum_gate::P: {
         auto [t, p] = std::any_cast<std::tuple<uint64_t, double>>(i.second);
-        // auto p =
-        //     std::get<1>(std::any_cast<std::tuple<uint64_t,
-        //     double>>(i.second));
         for (uint64_t j = 0; j < row; j++) {
           if (2 * t == j) {
             qc_view.at(j) += "P";
@@ -42,6 +39,30 @@ std::ostream& operator<<(std::ostream& os, const QCircuit& qc) {
             qc_view.at(j) += "─";
           } else {
             qc_view.at(j) += " ";
+          }
+        }
+      } break;
+      case Quantum_gate::RX: {
+        auto [t, p] = std::any_cast<std::tuple<uint64_t, double>>(i.second);
+        for (uint64_t j = 0; j < row; j++) {
+          if (2 * t == j) {
+            qc_view.at(j) += "Rx";
+          } else if (j % 2 == 0) {
+            qc_view.at(j) += "──";
+          } else {
+            qc_view.at(j) += "  ";
+          }
+        }
+      } break;
+      case Quantum_gate::RY: {
+        auto [t, p] = std::any_cast<std::tuple<uint64_t, double>>(i.second);
+        for (uint64_t j = 0; j < row; j++) {
+          if (2 * t == j) {
+            qc_view.at(j) += "Ry";
+          } else if (j % 2 == 0) {
+            qc_view.at(j) += "──";
+          } else {
+            qc_view.at(j) += "  ";
           }
         }
       } break;
