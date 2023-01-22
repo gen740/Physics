@@ -21,13 +21,14 @@ TEST(QuantumCircuit, H) {
 
   std::vector<uint32_t> input({0b00, 0b01, 0b10, 0b11});
   std::vector<std::vector<double>> output(
-      {{-1 / std::sqrt(2), 1 / std::sqrt(2), 0, 0},
-       {1 / std::sqrt(2), 1 / std::sqrt(2), 0, 0},
-       {0, 0, -1 / std::sqrt(2), 1 / std::sqrt(2)},
-       {0, 0, 1 / std::sqrt(2), 1 / std::sqrt(2)}});
+      {{1 / std::sqrt(2), 1 / std::sqrt(2), 0, 0},
+       {1 / std::sqrt(2), -1 / std::sqrt(2), 0, 0},
+       {0, 0, 1 / std::sqrt(2), 1 / std::sqrt(2)},
+       {0, 0, 1 / std::sqrt(2), -1 / std::sqrt(2)}});
 
   for (int i = 0; i < 4; i++) {
     auto out = q.eval(input.at(i));
+    std::cout << out << std::endl;
     for (int j = 0; j < 4; j++) {
       EXPECT_FLOAT_EQ(std::real(out[0][j]), output[i][j]);
     }

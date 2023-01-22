@@ -11,6 +11,10 @@ tasks:
       - cmake -B build -GNinja
       - cmake --build build
     silent: true
+  example:
+    cmds:
+      - cmake --build build --target examples
+    silent: true
   execute:
     cmds:
       - ./build/physics_test  --gtest_filter="Quantum*"

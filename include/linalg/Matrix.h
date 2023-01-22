@@ -16,13 +16,13 @@ namespace Linalg {
 
 /*! Matrix Clasas (COL MAJOR)
  *
- * 1 4 7
- * 2 5 8
- * 3 6 9
+ * 1 2 3
+ * 4 5 6
+ * 7 8 9
  *
  * Matrix access (1-index):
  *
- * m.(col, row) or m[col - 1][row - 1]
+ * m.(col, row) or m[row - 1][col - 1]
  *
  * */
 template <FloatingPointType T = double>
