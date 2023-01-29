@@ -155,6 +155,19 @@ TEST(Matrix, Operation) {
   std::cout << m * l << std::endl;
 }
 
+TEST(Matrix, Range) {
+  Matrix<double> m({
+      {1, 3, 5},  //
+      {2, 4, 6}   //
+  });
+  double counter = 0;
+  for (auto&& i : m) {
+    // std::cout << i << std::endl;
+    counter++;
+    EXPECT_FLOAT_EQ(i, counter);
+  }
+}
+
 TEST(Matrix, SVD) {
   Matrix<double> m({
       {1, 2, 3, 4},    //

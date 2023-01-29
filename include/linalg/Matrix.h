@@ -55,6 +55,18 @@ class Matrix {
   static Matrix<T> Diag(T value, size_t size);
   // static Matrix<T> Diag(T value, size_t col, size_t row);
 
+  // Range
+  T *begin() { return m_data.data(); }
+  T *end() { return m_data.data() + m_COL * m_ROW; }
+  // auto *begin() const { return m_data.cbegin(); }
+  // auto *end() const { return m_data.cend(); }
+  // auto *cbegin() const { return m_data.cbegin(); }
+  // auto *cend() const { return m_data.cend(); }
+  // auto *rbegin() { return m_data.rbegin(); }
+  // auto *rend() { return m_data.rend(); }
+  // auto *crbegin() const { return m_data.crbegin(); }
+  // auto *crend() const { return m_data.crend(); }
+
   // {col, row}
   [[nodiscard]] std::array<size_t, 2> shape() const { return {m_COL, m_ROW}; }
   [[nodiscard]] size_t col_size() const { return m_COL; };
