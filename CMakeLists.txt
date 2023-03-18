@@ -5,7 +5,6 @@ file(GLOB _PHYSICS_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/**/*.cc ${CMAKE_CURRENT
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
-message(${_PHYSICS_SOURCES})
 add_library(physics ${_PHYSICS_SOURCES})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -58,7 +57,8 @@ endif()
 # C++20 の有効化
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "-std=c++20 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++20 -fsanitize=undefined -fsanitize=address -fno-omit-frame-pointer -g ${CMAKE_CXX_FLAGS}")
+# set(CMAKE_CXX_FLAGS "-std=c++20 -g ${CMAKE_CXX_FLAGS}")
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     find_package(GTest)
@@ -86,10 +86,12 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
     ## examples
     add_custom_target(examples)
 
-    add_executable(quantity EXCLUDE_FROM_ALL examples/quantity.cc)
-    target_link_libraries(quantity physics)
+    file(GLOB PHYSICS_EXAMPLES ${CMAKE_CURRENT_LIST_DIR}/examples/*.cc)
+    foreach(m ${PHYSICS_EXAMPLES})
+        get_filename_component(e ${m} NAME_WE)
+        add_executable(${e} EXCLUDE_FROM_ALL ${m})
+        target_link_libraries(${e} physics)
+        add_dependencies(examples ${e})
+    endforeach()
 
-    add_executable(matrix EXCLUDE_FROM_ALL examples/matrix.cc)
-    target_link_libraries(matrix physics)
-    add_dependencies(examples quantity matrix)
 endif()

@@ -1,6 +1,7 @@
 #pragma once
 #include <linalg/Matrix.h>
 
+#include <any>
 #include <iosfwd>
 #include <vector>
 
@@ -13,8 +14,12 @@ using Linalg::ZMatrix;
  *
  *  Detailed description
  */
-enum Quantum_gate {
+enum class Quantum_gate : uint_fast8_t {
   X,
+  RX,
+  RY,
+  H,
+  P,
   CX,
   CCX,
 };
@@ -24,33 +29,42 @@ enum Quantum_gate {
  *  しかできないが、（2^32 = 4,294,967,296) であるから 32 bit で十分である。
  */
 class QCircuit {
-  uint32_t unit_num{0};
-  uint32_t num_qbit{0};
+  uint64_t unit_num{0};
+  uint64_t num_qbit{0};
   bool compiled = false;
+  double factor = 1;
 
   ZMatrix inner_repr;
-  std::vector<std::pair<Quantum_gate, std::vector<uint32_t>>> gates;
+  std::vector<std::pair<Quantum_gate, std::any>> gates;
 
-  void x_(std::vector<uint32_t> t);
-  void cx_(std::vector<uint32_t> ct);
-  void ccx_(std::vector<uint32_t> cct);
+  void p_(std::tuple<uint64_t, double> tp);
+  void rx_(std::tuple<uint64_t, double> tp);
+  void ry_(std::tuple<uint64_t, double> tp);
+  void h_(std::tuple<uint64_t> t);
+  void x_(std::tuple<uint64_t> t);
+  void cx_(std::tuple<uint64_t, uint64_t> ct);
+  void ccx_(std::tuple<uint64_t, uint64_t, uint64_t> cct);
 
  public:
   QCircuit() = delete;
-  explicit QCircuit(uint32_t nbit);
-  auto get_inner_repr();
+  explicit QCircuit(uint64_t nbit);
+  ZMatrix get_inner_repr();
 
-  void x(uint32_t target);
-  void cx(uint32_t control, uint32_t target);
-  void ccx(uint32_t control1, uint32_t control2, uint32_t target);
+  void p(uint64_t target, double phase);
+  void rx(uint64_t target, double phase);
+  void ry(uint64_t target, double phase);
+  void h(uint64_t target);
+  void x(uint64_t target);
+  void cx(uint64_t control, uint64_t target);
+  void ccx(uint64_t control1, uint64_t control2, uint64_t target);
 
   void compile();
-  ZMatrix eval(uint32_t init);
+  ZMatrix eval(uint64_t init);
   ZMatrix eval(const ZMatrix& init_mat);
 
   friend std::ostream& operator<<(std::ostream& os, const QCircuit& qc);
 };
 
-extern std::vector<std::pair<uint32_t, double>> measure(const ZMatrix& result);
+extern std::vector<std::pair<uint64_t, double>> measure(const ZMatrix& result);
 
 }  // namespace QuantumCircuit

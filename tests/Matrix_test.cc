@@ -29,7 +29,9 @@ TYPED_TEST(MatrixTest, basic) {
 TYPED_TEST(MatrixTest, IndexAccess) {
   Matrix<TypeParam> m(3, 3);
   m(1, 1) = 1.242;
+  m(1, 2) = 2.242;
   EXPECT_FLOAT_EQ(m[0][0], 1.242);
+  EXPECT_FLOAT_EQ(m[1][0], 2.242);
   EXPECT_FLOAT_EQ(m(1, 1), 1.242);
   m(3, 3) = 3;
   EXPECT_FLOAT_EQ(m(3, 3), 3);
@@ -171,11 +173,12 @@ TEST(Matrix, SVD) {
   std::cout << "Vt = " << v << std::endl;
 
   Matrix<double> s2(3, 4);
+  std::cout << s.shape().at(0) << " " << s.shape().at(1) << std::endl;
   for (int i = 0; i < 3; ++i) {
-    s2[i][i] = s[i][0];
+    s2(i + 1, i + 1) = s(i + 1, 1);
   }
 
   auto m3 = u * s2 * v;
-  // m3.reshape(3, 4);
+  m3.reshape(3, 4);
   std::cout << m3 << std::endl;
 }
