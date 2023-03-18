@@ -22,7 +22,7 @@ QCircuit::QCircuit(uint64_t nbit) : unit_num{1U << nbit}, num_qbit{nbit} {
   inner_repr = ZMatrix::Diag(static_cast<std::complex<double>>(1), unit_num);
 };
 
-ZMatrix QCircuit::get_inner_repr() { return inner_repr; }
+ZMatrix QCircuit::get_inner_repr() { return inner_repr ; }
 
 void QCircuit::compile() {
   std::cout << "Compiling ... " << std::endl;

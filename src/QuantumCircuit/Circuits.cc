@@ -61,15 +61,15 @@ void QCircuit::ry_(std::tuple<uint64_t, double> tp) {
 void QCircuit::h_(std::tuple<uint64_t> t) {
   factor *= 1 / std::sqrt(2);
   auto ir_copy = inner_repr;
+  auto [target] = t;
   for (size_t i = 0; i < unit_num; i++) {
-    if ((i & (1 << std::get<0>(t))) != 0u) {
-      inner_repr.swap(i + 1, (i & ~(1 << std::get<0>(t))) + 1);
+    if ((i & (1 << target)) != 0u) {
+      inner_repr.swap(i + 1, (i & ~(1 << target)) + 1);
     }
   }
   for (size_t i = 0; i < unit_num; i++) {
     for (size_t j = 0; j < unit_num; j++) {
-      if (((i & (1 << std::get<0>(t))) != 0u) &&
-          ((j & (1 << std::get<0>(t))) != 0u)) {
+      if (((i & (1 << target)) != 0u) && ((j & (1 << target)) != 0u)) {
         ir_copy[i][j] *= -1;
       }
     }

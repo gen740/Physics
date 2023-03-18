@@ -19,15 +19,16 @@ void b() {
   auto q = QuantumCircuit::QCircuit(2);
 
   q.h(0);
-  q.h(1);
-  q.cx(0, 1);
   q.h(0);
-  q.h(1);
+  // q.cx(0, 1);
+  // q.h(0);
+  // q.h(1);
 
   std::cout << q << std::endl;
 
   q.compile();
 
+  q.eval(0b11);
   std::cout << q.get_inner_repr() << std::endl;
 }
 
@@ -77,9 +78,9 @@ void g() {
 
 int main() {
   // a();
-  // b();
+  b();
   // c();
   // h();
-  g();
+  // g();
   return 0;
 }
